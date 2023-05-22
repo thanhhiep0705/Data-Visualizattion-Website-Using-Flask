@@ -1,0 +1,50 @@
+p{
+  padding: 0px;
+  margin: 0px;
+}
+h1{
+  padding: 0px;
+  margin: 0px;
+}
+h2{
+  padding: 0px;
+  margin: 0px;
+}
+
+.hero {
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+.function{
+  box-shadow: 0 4px 4px rgba(31, 31, 31, 0.1);
+  padding: 15px 10px;
+  width: 46%;
+}
+
+.btn {
+  width: 80%;
+}
+
+.statistics-list {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.statistic-item {
+  flex-basis: 25%;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+}
+
+.rectangle{
+  width: 10px;
+}

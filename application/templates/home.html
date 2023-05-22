@@ -1,0 +1,100 @@
+{% extends "layout.html" %} {% block content %}
+<div class="d-flex flex-column gap-5 p-3 my-4">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Data Visualizer</h1>
+      <p>Explore and analyze trends in job postings and courses data.</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about">
+    <div class="d-flex gap-2">
+      <div class="rectangle bg-success"></div>
+      <h2>About Data Visualizer</h2>
+    </div>
+    <p>
+      Data Visualizer is a platform that collects data from various job posting
+      websites and online course platforms. We analyze and visualize this data
+      to provide insights and trends in the job market and the world of online
+      learning. Whether you are looking for the latest job opportunities or
+      seeking to enhance your skills through online courses, Data Visualizer has
+      got you covered.
+    </p>
+  </section>
+
+  <!-- Functions Section -->
+  <section class="functions">
+    <div class="d-flex gap-2">
+      <div class="rectangle bg-danger"></div>
+      <h2 class="text-left">Features</h2>
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+      <div
+        class="function d-flex justify-content-around border border-primary rounded-3"
+      >
+        <img
+          src="https://besthr.com.vn/wp-content/uploads/2020/08/twitter_job_posting2x.png"
+          width="150"
+          height="100"
+          alt="Image description"
+        />
+        <div class="d-flex flex-column justify-content-between text-center">
+          <p class="px-1 py-2 text-body">
+            Explore and analyze trends in job postings
+          </p>
+          <a href="/recruitment" class="btn btn-outline-primary mx-auto"
+            >Job Postings Analysis</a
+          >
+        </div>
+      </div>
+      <div
+        class="function d-flex justify-content-around border border-warning rounded-3"
+      >
+        <img
+          src="https://prod-discovery.edx-cdn.org/media/course/image/0e575a39-da1e-4e33-bb3b-e96cc6ffc58e-8372a9a276c1.png"
+          width="150"
+          height="100"
+          alt="Image description"
+        />
+        <div class="d-flex flex-column justify-content-between text-center">
+          <p class="px-1 py-2 text-body">
+            Explore and analyze trends in courses
+          </p>
+          <a href="/course" class="btn btn-outline-warning mx-auto"
+            >Courses Analysis</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="statistics">
+    <div class="d-flex gap-2">
+      <div class="rectangle bg-warning"></div>
+      <h2>Key Statistics</h2>
+    </div>
+    <div class="statistics-list">
+      <div class="statistic-item bg-info">
+        <h3>1,000+</h3>
+        <p>Job Postings</p>
+      </div>
+      <div class="statistic-item bg-danger">
+        <h3>500+</h3>
+        <p>Courses</p>
+      </div>
+      <div class="statistic-item bg-warning">
+        <h3>10,000+</h3>
+        <p>Registered Users</p>
+      </div>
+    </div>
+  </section>
+</div>
+{% block css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/home.css') }}"
+/>
+{% endblock %} {% endblock %}

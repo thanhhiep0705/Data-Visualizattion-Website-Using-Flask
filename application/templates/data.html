@@ -1,0 +1,12 @@
+{% extends "layout.html" %} {% block content %}
+<section class="source-data">
+  <div class="course-data"></div>
+  <div class="job-data"></div>
+</section>
+<section class="colect-data"></section>
+{% block css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/data.css') }}"
+/>
+{% endblock %} {% endblock %}
