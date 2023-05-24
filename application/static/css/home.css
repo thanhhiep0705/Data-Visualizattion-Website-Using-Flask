@@ -49,8 +49,8 @@ h2{
 }
 
 .linear-underlined{
-  height: 5px;
+  height: 4px;
   width: 200px;
   background: linear-gradient(80deg,#5593dc,#66c5d9 80%,#69cada);
-  border-radius: 3px;
+  border-radius: 2px;
 }

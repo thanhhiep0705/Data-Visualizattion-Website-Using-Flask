@@ -10,6 +10,10 @@ h2{
   padding: 0px;
   margin: 0px;
 }
+h3{
+  padding: 0px;
+  margin: 0px;
+}
 .section-title {
     text-align: center;
     font-size: 28px;
@@ -57,5 +61,12 @@ h2{
     font-size: 24px;
     line-height: 28px;
     font-weight: bold;
-    color: #00b7d6;
+    color: #0d6efd;
  }
+
+ .linear-underlined{
+  height: 2px;
+  width: 150px;
+  background: linear-gradient(80deg,#5593dc,#66c5d9 80%,#69cada);
+  border-radius: 1px;
+}
