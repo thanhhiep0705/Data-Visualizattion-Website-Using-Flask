@@ -52,3 +52,10 @@ h2{
     margin-bottom: 10px;
     border-radius: 4px;
   }
+
+ .source-title{
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: bold;
+    color: #00b7d6;
+ }

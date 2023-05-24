@@ -20,11 +20,10 @@ h2{
   margin: 0 auto;
 }
 
-
-.function{
+.feature{
   box-shadow: 0 4px 4px rgba(31, 31, 31, 0.1);
   padding: 15px 10px;
-  width: 46%;
+  width: fit-content;
 }
 
 .btn {
@@ -33,7 +32,7 @@ h2{
 
 .statistics-list {
   display: flex;
-  justify-content: space-around;
+  gap: 3rem;
   margin-top: 20px;
 }
 
@@ -47,4 +46,11 @@ h2{
 
 .rectangle{
   width: 10px;
+}
+
+.linear-underlined{
+  height: 5px;
+  width: 200px;
+  background: linear-gradient(80deg,#5593dc,#66c5d9 80%,#69cada);
+  border-radius: 3px;
 }

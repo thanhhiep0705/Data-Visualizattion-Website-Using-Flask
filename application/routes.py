@@ -68,9 +68,16 @@ def test():
     # Hiển thị biểu đồ
     return render_template('course.html', graphJSON = graphJSON)
 
+@app.route('/data')
+def data():
+    return render_template('data.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.route('/course')
 def course():
-    app.config['ACTIVE_TAB'] = 'course'
     # Graph One
     df = px.data.medals_wide()
     fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"], title="Wide-Form Input")
@@ -97,7 +104,6 @@ def course():
 
 @app.route('/job-posting')
 def recruitment():
-    app.config['ACTIVE_TAB'] = 'job-postings'
     # Graph One
     df = px.data.medals_wide()
     fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"], title="Wide-Form Input")
@@ -121,7 +127,3 @@ def recruitment():
 
 
     return render_template('job-posting.html', graph1JSON=graph1JSON,  graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON)
-
-@app.route('/data')
-def data():
-    return render_template('data.html')

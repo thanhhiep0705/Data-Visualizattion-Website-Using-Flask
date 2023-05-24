@@ -1,16 +1,18 @@
 {% extends "layout.html" %} {% block content %}
-<div class="d-flex flex-column gap-5 p-3 my-4">
+<div style="height: 300px; background-image: url('../static//img/web-backgroud.jpg');"></div>
+<div class="d-flex flex-column gap-5 p-4  my-4">
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <h1>Data Visualizer</h1>
+      <h1 class="web-title">Visualizer Website</h1>
+      <div class="linear-underlined mx-auto m-2"></div>
       <p>Explore and analyze trends in job postings and courses data.</p>
     </div>
   </section>
 
   <!-- About Section -->
   <section class="about">
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 mb-4">
       <div class="rectangle bg-success"></div>
       <h2>About Data Visualizer</h2>
     </div>
@@ -25,14 +27,14 @@
   </section>
 
   <!-- Functions Section -->
-  <section class="functions">
+  <section class="features">
     <div class="d-flex gap-2">
-      <div class="rectangle bg-danger"></div>
+      <div class="rectangle bg-info"></div>
       <h2 class="text-left">Features</h2>
     </div>
-    <div class="d-flex justify-content-between mt-4">
+    <div class="d-flex gap-5 mt-4">
       <div
-        class="function d-flex justify-content-around border border-primary rounded-3"
+        class="feature d-flex justify-content-around border border-primary rounded-3"
       >
         <img
           src="https://besthr.com.vn/wp-content/uploads/2020/08/twitter_job_posting2x.png"
@@ -50,7 +52,7 @@
         </div>
       </div>
       <div
-        class="function d-flex justify-content-around border border-warning rounded-3"
+        class="feature d-flex justify-content-around border border-warning rounded-3"
       >
         <img
           src="https://prod-discovery.edx-cdn.org/media/course/image/0e575a39-da1e-4e33-bb3b-e96cc6ffc58e-8372a9a276c1.png"
@@ -81,7 +83,7 @@
         <h3>1,000+</h3>
         <p>Job Postings</p>
       </div>
-      <div class="statistic-item bg-danger">
+      <div class="statistic-item bg-success">
         <h3>500+</h3>
         <p>Courses</p>
       </div>
