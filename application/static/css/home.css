@@ -54,3 +54,7 @@ h2{
   background: linear-gradient(80deg,#5593dc,#66c5d9 80%,#69cada);
   border-radius: 2px;
 }
+
+section{
+  padding: 20px;
+}

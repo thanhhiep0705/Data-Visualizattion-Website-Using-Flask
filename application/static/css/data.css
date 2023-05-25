@@ -70,3 +70,7 @@ h3{
   background: linear-gradient(80deg,#5593dc,#66c5d9 80%,#69cada);
   border-radius: 1px;
 }
+
+.source-item{
+  box-shadow: 0 4px 4px rgba(6, 6, 6, 0.1);
+}

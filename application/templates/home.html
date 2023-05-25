@@ -1,28 +1,33 @@
 {% extends "layout.html" %} {% block content %}
-<div style="height: 220px; background-image: url('../static//img/web-backgroud.jpg');"></div>
-<div class="d-flex flex-column gap-5 p-4  my-4">
+<div
+  style="
+    height: 220px;
+    background-image: url('../static//img/web-backgroud.jpg');
+  "
+></div>
+<div class="d-flex flex-column gap-2 my-4">
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <h1 class="web-title">Visualizer Website</h1>
+      <h1 class="web-title">Visualization Website</h1>
       <div class="linear-underlined mx-auto m-2"></div>
       <p>Explore and analyze trends in job postings and courses data.</p>
     </div>
   </section>
 
   <!-- About Section -->
-  <section class="about">
+  <section class="about bg-light">
     <div class="d-flex gap-2 mb-4">
       <div class="rectangle bg-success"></div>
-      <h2>About Data Visualizer</h2>
+      <h2>About Visualization Website</h2>
     </div>
     <p>
-      Data Visualizer is a platform that collects data from various job posting
-      websites and online course platforms. We analyze and visualize this data
-      to provide insights and trends in the job market and the world of online
-      learning. Whether you are looking for the latest job opportunities or
-      seeking to enhance your skills through online courses, Data Visualizer has
-      got you covered.
+      Visualization Website is a platform that collects data from various job
+      posting websites and online course platforms. We analyze and visualize
+      this data to provide insights and trends in the job market and the world
+      of online learning. Whether you are looking for the latest job
+      opportunities or seeking to enhance your skills through online courses,
+      Data Visualizer has got you covered.
     </p>
   </section>
 
@@ -32,15 +37,15 @@
       <div class="rectangle bg-info"></div>
       <h2 class="text-left">Features</h2>
     </div>
-    <div class="d-flex gap-5 mt-4">
+    <div class="row row-cols-auto gap-5 mt-4 m-auto">
       <div
-        class="feature d-flex justify-content-around border border-primary rounded-3"
+        class="feature col d-flex justify-content-around border border-primary rounded-3"
       >
         <img
-          src="https://besthr.com.vn/wp-content/uploads/2020/08/twitter_job_posting2x.png"
+          src="../../static/img/job-posting.png"
           width="150"
           height="100"
-          alt="Image description"
+          alt="Job Postings IMG"
         />
         <div class="d-flex flex-column justify-content-between text-center">
           <p class="px-1 py-2 text-body">
@@ -52,13 +57,13 @@
         </div>
       </div>
       <div
-        class="feature d-flex justify-content-around border border-warning rounded-3"
+        class="feature col d-flex justify-content-around border border-warning rounded-3"
       >
         <img
-          src="https://prod-discovery.edx-cdn.org/media/course/image/0e575a39-da1e-4e33-bb3b-e96cc6ffc58e-8372a9a276c1.png"
+          src="../../static/img/courses.png"
           width="150"
-          height="100"
-          alt="Image description"
+          height="100"  
+          alt="Couses Img"
         />
         <div class="d-flex flex-column justify-content-between text-center">
           <p class="px-1 py-2 text-body">
@@ -73,7 +78,7 @@
   </section>
 
   <!-- Statistics Section -->
-  <section class="statistics">
+  <section class="statistics bg-light">
     <div class="d-flex gap-2">
       <div class="rectangle bg-warning"></div>
       <h2>Key Statistics</h2>
