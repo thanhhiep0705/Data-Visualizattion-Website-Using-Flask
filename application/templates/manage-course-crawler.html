@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class=" py-3 px-5">
+    <button type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#myModal">
+        Open modal
+    </button>
+
+    <!-- The Modal -->
+    <div class="modal"
+         id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Chart 1</h4>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="chart"
+                     id="chart1">
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1>Dashboard</h1>
+    <div>
+        <div class="row row-cols-auto justify-content-between">
+            <div class="col-xl-4 col-lg-6">
+                <div class="card">
+                    <div class="card-header">Chart 1</div>
+                    <div class="card-body">
+                        <div class="chart"
+                             id="chart2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- plotly CDN -->
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    var graph1 = {{ graphJSON | safe}};
+    Plotly.plot("chart1", graph1, {});
+    Plotly.plot("chart2", graph1, {});
+</script>
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dialog.css') }}" />
+{% endblock %}
+
+{% endblock %}

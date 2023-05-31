@@ -1,120 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
-      crossorigin="anonymous"
-    />
-    <!-- https://github.com/michalsnik/aos -->
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <!-- Custom CSS -->
-    <link
-      rel="stylesheet"
-      href="{{url_for('static', filename = 'main.css')}}"
-      type="text/css"
-    />
-    <title>Visualization Website</title>
-  </head>
-  <body>
-    <nav
-      id="navbar"
-      class="navbar navbar-expand-lg navbar-light bg-light"
-      style="background-color: #e3f2fd"
-    >
-      <div class="container-fluid gap-3 px-3">
-        <a class="navbar-brand" href="/">Home</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
-            <li class="nav-item">
-              <a class="nav-link" href="/data">Data</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/course">Course</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/job-posting">Job Posting</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="/#">Action</a></li>
-                <li><a class="dropdown-item" href="/#">Another action</a></li>
-              </ul>
-            </li>
-          </ul>
-          <!-- <form class="d-flex">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible"
+        content="IE=edge" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x"
+        crossorigin="anonymous" />
+  <!-- https://github.com/michalsnik/aos -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/aos@next/dist/aos.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet"
+        href="{{url_for('static', filename = 'main.css')}}"
+        type="text/css" />
+  <title>Visualization Website</title>
+</head>
+
+<body>
+  <nav id="navbar"
+       class="navbar navbar-expand-lg navbar-light bg-light"
+       style="background-color: #e3f2fd">
+    <div class="container-fluid gap-3 px-3">
+      <a class="navbar-brand"
+         href="/">Home</a>
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse"
+           id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
+          <li class="nav-item">
+            <a class="nav-link"
+               href="/data">Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+               href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+               href="/course">Course</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+               href="/job-posting">Job Posting</a>
+          </li>
+          <li id="navbar-dropdown" class="nav-item dropdown">
+            <a class="dropdown-toggle nav-link"
+               role="button"
+               id="dropdown-link"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+              Manage Crawler
+            </a>
+            <ul class="dropdown-menu"
+                aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item dropdown-link"
+                   href="/course-crawler">Courses Crawler</a></li>
+              <li><a class="dropdown-item dropdown-link"
+                   href="/job-crawler">Job postings Crawler</a></li>
+            </ul>
+          </li>
+        </ul>
+        <!-- <form class="d-flex">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
           </form>-->
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div>
+      <div class="col-md-12 col-sm-12 col-xm-12">
+        <div class="mx-auto">
+          {% block content %} {% endblock %}
         </div>
       </div>
-    </nav>
+    </div>
+    </div>
+  </main>
 
-    <main>
-        <div>
-          <div class="col-md-12 col-sm-12 col-xm-12">
-            <div class="mx-auto">
-              {% block content %} {% endblock %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+  <script>
+    // Lấy liên kết gốc của trang
+    var currentUrl = window.location.href;
 
-    <script>
-      // Lấy liên kết gốc của trang
-      var currentUrl = window.location.href;
+    // Lấy danh sách các liên kết trong thanh điều hướng
+    var navLinks = document.getElementById("navbar").querySelectorAll(".nav-link");
+    var dropdownLinks = document.getElementById("navbar-dropdown").querySelectorAll(".dropdown-link");
 
-      // Lấy danh sách các liên kết trong thanh điều hướng
-      var navLinks = document.getElementById("navbar").querySelectorAll(".nav-link");
+    // Kiểm tra từng liên kết để xác định liên kết nào có URL khớp với URL hiện tại
+    navLinks.forEach(function (link) {
+      if (link.href === currentUrl) {
+        link.classList.add("active"); // Thêm lớp "active" cho liên kết khớp
+        return;
+      }
+    });
+    dropdownLinks.forEach(function (link) {
+      if (link.href === currentUrl) {
+        document.getElementById("dropdown-link").classList.add("active"); // Thêm lớp "active" cho liên kết khớp
+        return;
+      }
+    });
+  </script>
 
-      // Kiểm tra từng liên kết để xác định liên kết nào có URL khớp với URL hiện tại
-      navLinks.forEach(function (link) {
-        if (link.href === currentUrl) {
-          link.classList.add("active"); // Thêm lớp "active" cho liên kết khớp
-        }
-      });
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+          crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      offset: 400,
+      duration: 1000,
+    });
+  </script>
+</body>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-      AOS.init({
-        offset: 400,
-        duration: 1000,
-      });
-    </script>
-  </body>
 </html>

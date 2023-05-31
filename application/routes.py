@@ -14,7 +14,7 @@ def index():
     return render_template('home.html')
 
 
-@app.route('/test')
+@app.route('/course-crawler')
 def test():
 # Dữ liệu mẫu
     x_data = [1, 2, 3, 4, 5]
@@ -37,19 +37,7 @@ def test():
             dict(label='Dữ liệu 2',
                 method='update',
                 args=[{'visible': [False, True, False, False, False]},
-                    {'title': 'Dữ liệu 2'}]),
-            dict(label='Dữ liệu 3',
-                method='update',
-                args=[{'visible': [False, False, True, False, False]},
-                    {'title': 'Dữ liệu 3'}]),
-            dict(label='Dữ liệu 4',
-                method='update',
-                args=[{'visible': [False, False, False, True, False]},
-                    {'title': 'Dữ liệu 4'}]),
-            dict(label='Dữ liệu 5',
-                method='update',
-                args=[{'visible': [False, False, False, False, True]},
-                    {'title': 'Dữ liệu 5'}])
+                    {'title': 'Dữ liệu 2'}])
         ]),
         direction='down',
         showactive=True
@@ -66,7 +54,7 @@ def test():
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Hiển thị biểu đồ
-    return render_template('course.html', graphJSON = graphJSON)
+    return render_template('manage-course-crawler.html', graphJSON = graphJSON)
 
 @app.route('/data')
 def data():
@@ -372,18 +360,19 @@ def about():
 def course():
     # Graph One
     df = px.data.medals_wide()
-    fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"], title="Wide-Form Input")
+    fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"])
+    print(fig1)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
     df = px.data.iris()
     fig2 = px.scatter_3d(df, x='sepal_length', y='sepal_width', z='petal_width',
-              color='species',  title="Iris Dataset")
+              color='species')
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph three
     df = px.data.gapminder().query("continent=='Oceania'")
-    fig3 = px.line(df, x="year", y="lifeExp", color='country',  title="Life Expectancy")
+    fig3 = px.line(df, x="year", y="lifeExp", color='country')
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
 
     #Graph four
@@ -398,18 +387,18 @@ def course():
 def recruitment():
     # Graph One
     df = px.data.medals_wide()
-    fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"], title="Wide-Form Input")
+    fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"])
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
     df = px.data.iris()
     fig2 = px.scatter_3d(df, x='sepal_length', y='sepal_width', z='petal_width',
-              color='species',  title="Iris Dataset")
+              color='species')
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph three
     df = px.data.gapminder().query("continent=='Oceania'")
-    fig3 = px.line(df, x="year", y="lifeExp", color='country',  title="Life Expectancy")
+    fig3 = px.line(df, x="year", y="lifeExp", color='country')
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
 
     #Graph four

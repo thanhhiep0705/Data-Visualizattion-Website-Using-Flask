@@ -1,42 +1,75 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class=" py-3 px-5">
-    <h1>Dashboard</h1>
+<div class="py-3 px-5">
+    <h1 class="text-center m-4">Course Data Visualization Dashboard</h1>
     <div>
-        <div class="row row-cols-auto justify-content-between">
-            <div class="col-xl-4 col-lg-6">
-                <div class="card">
-                    <div class="card-header">Chart 1</div>
-                    <div class="card-body">
+        <div class="row row-cols-auto justify-content-evenly gap-4">
+            <div>
+                <div class="chart-container">
+                    <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+                        <span>Chart 1</span>
+                        <img type="button"
+                             data-bs-toggle="modal"
+                             data-bs-target="#myModal"
+                             src="../static/img/zoom-out.png"
+                             height="28"
+                             alt="Zoom icon" />
+                    </div>
+                    <div class="chart-container-body">
                         <div class="chart"
                              id="chart1"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-4 col-lg-6">
-                <div class="card">
-                    <div class="card-header">Chart 2</div>
-                    <div class="card-body">
+            <div>
+                <div class="chart-container">
+                    <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+                        <span>Chart 2</span>
+                        <img type="button"
+                             data-bs-toggle="modal"
+                             data-bs-target="#myModal"
+                             src="../static/img/zoom-out.png"
+                             height="28"
+                             alt="Zoom icon" />
+                    </div>
+                    <div class="chart-container-body">
                         <div class="chart"
                              id="chart2"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-lg-6">
-                <div class="card">
-                    <div class="card-header">Chart 3</div>
-                    <div class="card-body">
+
+            <div>
+                <div class="chart-container">
+                    <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+                        <span>Chart 3</span>
+                        <img type="button"
+                             data-bs-toggle="modal"
+                             data-bs-target="#myModal"
+                             src="../static/img/zoom-out.png"
+                             height="28"
+                             alt="Zoom icon" />
+                    </div>
+                    <div class="chart-container-body">
                         <div class="chart"
                              id="chart3"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-4 col-lg-6">
-                <div class="card">
-                    <div class="card-header">Chart 4</div>
-                    <div class="card-body">
+            <div>
+                <div class="chart-container">
+                    <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+                        <span>Chart 4</span>
+                        <img type="button"
+                             data-bs-toggle="modal"
+                             data-bs-target="#myModal"
+                             src="../static/img/zoom-out.png"
+                             height="28"
+                             alt="Zoom icon" />
+                    </div>
+                    <div class="chart-container-body">
                         <div class="chart"
                              id="chart4"></div>
                     </div>
@@ -45,22 +78,50 @@
         </div>
     </div>
 
+    <div class="modal"
+         id="myModal">
+        <div class="modal-dialog" style="max-width: 1000px;">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Chart 1</h4>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="d-flex justify-content-center align-items-lg-center">
+                <div class="chart"
+                     id="dialog-chart1" style="height: 700px;">
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
 </div>
-    <!-- plotly CDN -->
+<!-- plotly CDN -->
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script type="text/javascript">
-        var graphs1 = {{ graph1JSON | safe}};
-        Plotly.plot("chart1", graphs1,{});
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    var graphs1 = {{ graph1JSON | safe}};
+    Plotly.plot("chart1", graphs1);
+    Plotly.plot("dialog-chart1", graphs1, {});
 
-        var graphs2 = {{ graph2JSON | safe}};
-        Plotly.plot("chart2", graphs2,{});
+    var graphs2 = {{ graph2JSON | safe}};
+    Plotly.plot("chart2", graphs2, {});
 
-        var graphs3 = {{ graph3JSON | safe}};
-        Plotly.plot("chart3", graphs3,{});
+    var graphs3 = {{ graph3JSON | safe}};
+    Plotly.plot("chart3", graphs3, {});
 
-        var graphs4 = {{ graph4JSON | safe}};
-        Plotly.plot("chart4", graphs4,{});
-    </script>
+    var graphs4 = {{ graph4JSON | safe}};
+    Plotly.plot("chart4", graphs4, {});
+</script>
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dialog.css') }}" />
+{% endblock %}
 
 {% endblock %}

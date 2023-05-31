@@ -51,10 +51,46 @@
     color: #00b7d6 !important ;
 }
 
+.dropdown-toggle.active{
+  color: #00b7d6 !important ;
+}
 
 .site-header-logo h1 {
   color: rgb(39, 147, 248);
   font-family: lobsterregular;
   font-size: 3rem;
   margin-top: 2rem;
+}
+
+.chart-container{
+  width: 450px;
+  min-width: 300px;
+  border: 2px solid gray;
+  border-radius: 10px;
+}
+
+.chart-container-header{
+  padding: 15px 15px;
+  border-radius: 10px;
+  border-bottom: 2px solid gray;
+  background-color: aliceblue;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.chart-container-body{
+  pointer-events: none;
+  padding: 5px 5px;
+}
+
+.chart-container .legend{
+  display: none;
+}
+
+.chart-container .modebar-container{
+  display: none;
+}
+
+.plot-container .svg-container{
+  max-width: 100%;
 }

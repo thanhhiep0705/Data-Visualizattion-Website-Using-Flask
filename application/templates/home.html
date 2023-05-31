@@ -1,10 +1,8 @@
 {% extends "layout.html" %} {% block content %}
-<div
-  style="
+<div style="
     height: 220px;
     background-image: url('../static//img/web-backgroud.jpg');
-  "
-></div>
+  "></div>
 <div class="d-flex flex-column gap-2 my-4">
   <!-- Hero Section -->
   <section class="hero">
@@ -38,40 +36,30 @@
       <h2 class="text-left">Features</h2>
     </div>
     <div class="row row-cols-auto gap-5 mt-4 m-auto">
-      <div
-        class="feature col d-flex justify-content-around border border-primary rounded-3"
-      >
-        <img
-          src="../../static/img/job-posting.png"
-          width="150"
-          height="100"
-          alt="Job Postings IMG"
-        />
+      <div class="feature col d-flex justify-content-around border border-primary rounded-3">
+        <img src="../../static/img/job-posting.png"
+             width="150"
+             height="100"
+             alt="Job Postings IMG" />
         <div class="d-flex flex-column justify-content-between text-center">
           <p class="px-1 py-2 text-body">
             Explore and analyze trends in job postings
           </p>
-          <a href="/job-posting" class="btn btn-outline-primary mx-auto"
-            >Job Postings Analysis</a
-          >
+          <a href="/job-posting"
+             class="btn btn-outline-primary mx-auto">Job Postings Analysis</a>
         </div>
       </div>
-      <div
-        class="feature col d-flex justify-content-around border border-warning rounded-3"
-      >
-        <img
-          src="../../static/img/courses.png"
-          width="150"
-          height="100"  
-          alt="Couses Img"
-        />
+      <div class="feature col d-flex justify-content-around border border-warning rounded-3">
+        <img src="../../static/img/courses.png"
+             width="150"
+             height="100"
+             alt="Couses Img" />
         <div class="d-flex flex-column justify-content-between text-center">
           <p class="px-1 py-2 text-body">
             Explore and analyze trends in courses
           </p>
-          <a href="/course" class="btn btn-outline-warning mx-auto"
-            >Courses Analysis</a
-          >
+          <a href="/course"
+             class="btn btn-outline-warning mx-auto">Courses Analysis</a>
         </div>
       </div>
     </div>
@@ -100,8 +88,6 @@
   </section>
 </div>
 {% block css %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/home.css') }}"
-/>
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}" />
 {% endblock %} {% endblock %}
