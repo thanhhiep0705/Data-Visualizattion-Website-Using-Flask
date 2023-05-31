@@ -361,7 +361,6 @@ def course():
     # Graph One
     df = px.data.medals_wide()
     fig1 = px.bar(df, x="nation", y=["gold", "silver", "bronze"])
-    print(fig1)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
@@ -380,8 +379,31 @@ def course():
     fig4 = px.bar(data_canada, x='year', y='pop')
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
 
+    graphsList = [
+        {
+            'name':'Chart 1',
+            'chartId':'chart1',
+            'dialogId': 'dialog-chart1'
+        },
+        {
+            'name':'Chart 2',
+            'chartId':'chart2',
+            'dialogId': 'dialog-chart2'
+        },
+        {
+            'name':'Chart 3',
+            'chartId':'chart3',
+            'dialogId': 'dialog-chart3'
+        },
+        {
+            'name':'Chart 4',
+            'chartId':'chart4',
+            'dialogId': 'dialog-chart4'
+        },
+    ]
 
-    return render_template('course.html', graph1JSON=graph1JSON,  graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON)
+
+    return render_template('course.html', graph1JSON=graph1JSON,  graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, graphsList = graphsList)
 
 @app.route('/job-posting')
 def recruitment():

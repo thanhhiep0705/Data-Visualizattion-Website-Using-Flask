@@ -63,24 +63,26 @@
 }
 
 .chart-container{
-  width: 450px;
-  min-width: 300px;
+  min-width: 200px;
+  max-height: 500px;
+  width: 100%;
   border: 2px solid gray;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .chart-container-header{
   padding: 15px 15px;
-  border-radius: 10px;
   border-bottom: 2px solid gray;
+  border-radius: 10px 10px 0px 0px;
   background-color: aliceblue;
   font-weight: bold;
   font-size: larger;
 }
 
 .chart-container-body{
+  margin: 5px;
   pointer-events: none;
-  padding: 5px 5px;
 }
 
 .chart-container .legend{

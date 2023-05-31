@@ -2,51 +2,44 @@
 <div class="d-flex flex-column">
   <section class="px-5 py-4 source-data">
     <div class="d-flex gap-2 align-items-center mb-4">
-      <img
-        height="32"
-        src="../static/img/data-source.png"
-        alt="Icon database"
-      />
+      <img height="32" src="../static/img/data-source.png" alt="Icon database" />
       <h2 class="title">Data Sources</h2>
     </div>
     {% for source in source_data %}
-      <div class="course-data mb-5">
-        <h3 class="title text-center">{{source['title']}}</h3>
-        <div class="linear-underlined mx-auto mb-3"></div>
-        <div class="row row-cols-auto justify-content-center gap-4 mx-auto">
-          {% for web in source['data'] %}
-          <div
-            class="col text-center px-3 py-3 rounded-3 bg-light d-flex flex-column gap-3 source-item px-3 py-4 rounded-3 bg-light d-flex flex-column gap-3"
-          >
-            <span class="source-title">{{ web['title'] }}</span>
-            <div>
-              <div class="d-flex gap-3">
-                {% for field in web['information'] %}
-                <div>
-                  <div
-                    class="rounded-circle bg-info d-flex justify-content-center align-items-center"
-                    style="width: 100px; height: 100px"
-                  >
-                    <span class="text-white">{{field['value']}}</span>
-                  </div>
-                  <p>{{field['title']}}</p>
+    <div class="course-data mb-5">
+      <h3 class="title text-center">{{source['title']}}</h3>
+      <div class="linear-underlined mx-auto mb-3"></div>
+      <div class="row row-cols-auto justify-content-center gap-4 mx-auto">
+        {% for web in source['data'] %}
+        <div
+          class="col text-center px-3 py-3 rounded-3 bg-light d-flex flex-column gap-3 source-item px-3 py-4 rounded-3 bg-light d-flex flex-column gap-3"
+        >
+          <span class="source-title">{{ web['title'] }}</span>
+          <div>
+            <div class="d-flex gap-3">
+              {% for field in web['information'] %}
+              <div>
+                <div
+                  class="rounded-circle bg-info d-flex justify-content-center align-items-center"
+                  style="width: 100px; height: 100px"
+                >
+                  <span class="text-white">{{field['value']}}</span>
                 </div>
-                {% endfor %}
+                <p>{{field['title']}}</p>
               </div>
+              {% endfor %}
             </div>
-            <a
-              href="{{ web['website'] }}"
-              class="btn btn-outline-primary mx-auto"
-              target="_blank"
-              >Access Website</a
-            >
           </div>
-          {% endfor %}
+          <a href="{{ web['website'] }}" class="btn btn-outline-primary mx-auto" target="_blank"
+            >Access Website</a
+          >
         </div>
+        {% endfor %}
       </div>
+    </div>
     {% endfor %}
   </section>
-  
+
   <section class="px-5 py-4 colect-data d-flex flex-column gap-4 bg-light">
     <div class="d-flex gap-2 align-items-center">
       <img height="30" src="../static/img/spider.png" alt="Icon database" />
@@ -54,20 +47,17 @@
       <h2 class="title">Collect Data</h2>
     </div>
     <p>
-      In the era of information overload, harnessing the power of data has
-      become paramount. To stay competitive, organizations need an efficient
-      data pipeline that enables them to collect, process, and analyze valuable
-      insights. In this context, a robust data pipeline is proposed to gather
-      information from various sources such as job postings websites and courses
-      websites, consolidating it in a centralized repository known as a
-      datalake. By implementing this pipeline, organizations can effortlessly
-      extract and store diverse datasets, creating a foundation for
-      comprehensive analysis. This allows for a deeper understanding of job
-      market trends, skill requirements, and educational demands. With the
-      extracted data at their disposal, businesses can then leverage advanced
-      analytical techniques to uncover patterns, derive actionable intelligence,
-      and make informed decisions that propel them towards success in this
-      dynamic landscape.
+      In the era of information overload, harnessing the power of data has become paramount. To stay
+      competitive, organizations need an efficient data pipeline that enables them to collect,
+      process, and analyze valuable insights. In this context, a robust data pipeline is proposed to
+      gather information from various sources such as job postings websites and courses websites,
+      consolidating it in a centralized repository known as a datalake. By implementing this
+      pipeline, organizations can effortlessly extract and store diverse datasets, creating a
+      foundation for comprehensive analysis. This allows for a deeper understanding of job market
+      trends, skill requirements, and educational demands. With the extracted data at their
+      disposal, businesses can then leverage advanced analytical techniques to uncover patterns,
+      derive actionable intelligence, and make informed decisions that propel them towards success
+      in this dynamic landscape.
     </p>
     <div class="text-center">
       <img
@@ -79,8 +69,5 @@
   </section>
 </div>
 {% block css %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/data.css') }}"
-/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/data.css') }}" />
 {% endblock %} {% endblock %}
