@@ -7,11 +7,7 @@
       <h2>INTRODUCTION</h2>
     </div>
     <p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut iure
-      error blanditiis neque ea reprehenderit eveniet dolor voluptates nihil
-      delectus nisi dicta quam nulla, harum non, cupiditate placeat rerum! Lorem
-      ipsum dolor sit, amet consectetur adipisicing elit. Labore ut iure error
-      blanditiis neque ea reprehenderit eveniet dolor
+      Welcome to our group's graduation project! Our team is thrilled to present our graduation project, which focuses on building a data pipeline to ingest data related to courses and recruitment into a data lake. Then, apply data processing techniques to generate useful basic reports and data analysis for businesses as well as individuals in need of job search. The ultimate goal of this project is to enhance data management efficiency and provide valuable insights to optimize the current training and recruitment processes. Join us in exploring and implementing this data pipeline to make a meaningful impact
     </p>
   </div>
   <div class="p-4 bg-light">
@@ -20,11 +16,7 @@
       <h2>SLOGAN</h2>
     </div>
     <p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut iure
-      error blanditiis neque ea reprehenderit eveniet dolor voluptates nihil
-      delectus nisi dicta quam nulla, harum non, cupiditate placeat rerum! Lorem
-      ipsum dolor sit, amet consectetur adipisicing elit. Labore ut iure error
-      blanditiis neque ea reprehenderit eveniet dolor
+      Unleashing Data's Potential for a Smarter Future
     </p>
   </div>
 
@@ -35,119 +27,28 @@
     </div>
 
     <div class="row row-cols-auto justify-content-center gap-4 mx-auto">
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
+      {% for member in team_members %}
+      <div class="item-member col text-center d-flex flex-column gap-1 px-3 py-4">
         <div class="avatar text-center">
           <img
-            src="../static/img/businesswoman.png"
+            src="{{ member['image'] }}"
             width="100"
             height="100"
             alt="Member Avatar"
           />
         </div>
-        <div class="name">Nguyen Tran Minh Thu</div>
-        <div class="sub-title">Instructor</div>
-        <div class="description text-justify">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam
+        <div class="name">{{ member['name'] }}</div>
+        <div class="role">{{member['role']}}</div>
+        <div class="information">
+          {% for field in member['information'] %}
+          <div class="d-flex justify-content-between">
+            <span>{{ field['title'] }} :</span>
+            <span>{{ field['value'] }}</span>
+          </div>
+          {% endfor %}
         </div>
       </div>
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
-        <div class="avatar text-center">
-          <img
-            src="../static/img/man.png"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
-        </div>
-        <div class="name">Nguyen Pham Quang Dung</div>
-        <div class="sub-title">Team Leader</div>
-
-        <div class="description">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam nulla, harum non, cupiditate placeat
-          rerum! Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Labore ut iure error blanditiis neque ea reprehenderit eveniet dolor
-        </div>
-      </div>
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
-        <div class="avatar text-center">
-          <img
-            src="../static/img/hacker.png"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
-        </div>
-        <div class="name">Duong Thanh Hiep</div>
-        <div class="sub-title">Team Member</div>
-        <div class="description">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam nulla, harum non, cupiditate placeat
-          rerum! Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Labore ut iure error blanditiis neque ea reprehenderit eveniet dolor
-        </div>
-      </div>
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
-        <div class="avatar text-center">
-          <img
-            src="../static/img/woman.png"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
-        </div>
-        <div class="name">Nguyen Thi Tieu Mi</div>
-        <div class="sub-title">Team Member</div>
-        <div class="description">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam nulla, harum non, cupiditate placeat
-          rerum! Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Labore ut iure error blanditiis neque ea reprehenderit eveniet dolor
-        </div>
-      </div>
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
-        <div class="avatar text-center">
-          <img
-            src="../static/img/businessman.png"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
-        </div>
-        <div class="name">Le Thanh Loc</div>
-        <div class="sub-title">Team Member</div>
-        <div class="description">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam nulla, harum non, cupiditate placeat
-          rerum! Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Labore ut iure error blanditiis neque ea reprehenderit eveniet dolor
-        </div>
-      </div>
-      <div class="item-member col text-center d-flex flex-column gap-1 p-3">
-        <div class="avatar text-center">
-          <img
-            src="../static/img/girl.png"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
-        </div>
-        <div class="name">Nguyen Thi Kim Ngan</div>
-        <div class="sub-title">Team Member</div>
-        <div class="description">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore ut
-          iure error blanditiis neque ea reprehenderit eveniet dolor voluptates
-          nihil delectus nisi dicta quam nulla, harum non, cupiditate placeat
-          rerum! Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-          Labore ut iure error blanditiis neque ea reprehenderit eveniet dolor
-        </div>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </div>

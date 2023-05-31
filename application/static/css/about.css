@@ -10,18 +10,16 @@ p{
     padding: 0px;
     margin: 0px;
   }
+
 .item-member{
-    width: 280px;
+    width: 300px;
+    border: 2px solid rgb(88, 151, 233);
+    border-radius: 15px;
 }
 
 .description{
     text-align: justify;
     padding: 4px;
-}
-
-.item-member{
-    border: 2px solid rgb(88, 151, 233);
-    border-radius: 15px;
 }
 
 .avatar{
