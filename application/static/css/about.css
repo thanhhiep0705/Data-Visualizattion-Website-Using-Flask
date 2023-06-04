@@ -1,31 +1,18 @@
-p{
-    padding: 0px;
-    margin: 0px;
-  }
-  h1{
-    padding: 0px;
-    margin: 0px;
-  }
-  h2{
-    padding: 0px;
-    margin: 0px;
-  }
-
-.item-member{
-    width: 300px;
-    border: 2px solid rgb(88, 151, 233);
-    border-radius: 15px;
+.item-member {
+  width: 300px;
+  border: 2px solid rgb(88, 151, 233);
+  border-radius: 15px;
 }
 
-.description{
-    text-align: justify;
-    padding: 4px;
+.description {
+  text-align: justify;
+  padding: 4px;
 }
 
-.avatar{
-    margin-bottom: 20px;
+.avatar {
+  margin-bottom: 20px;
 }
 
-.name{
-    font-size: 18px;
+.name {
+  font-size: 18px;
 }

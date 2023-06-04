@@ -1,0 +1,99 @@
+.job-container {
+    max-width: 300px;
+    max-height: 430px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  .job-title{
+    height: max-content;
+  }
+  
+  .overflow-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .job-name{
+    font-weight: bold;
+  }
+  
+  .job-rating{
+    min-width: max-content
+  }
+  
+  .job-container:hover {
+    transform: scale(1.05);
+    transition: transform 0.5s;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .job-container {
+    transition: box-shadow 0.3s ease-in-out;
+  
+  }
+  
+  .job-container:active {
+    transform: scale(1.03);
+    transition: transform 0.5s;
+  }
+  
+  .job-animation {
+    animation-name: jobAnimation;
+    animation-duration: 0.3s;
+  }
+  
+  @keyframes jobAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .select2-results__options{
+    display: flex;
+    gap: 24px;
+  }
+  
+  .select2-results{
+    border: 1px solid #ccc;
+    padding: 10px
+  }
+  
+  .select2-results__group{
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  
+  .select2-results__options--nested{
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 6px;
+  }
+  
+  .select2-results__option--selectable{
+    padding: .375rem 1.2rem;
+  }
+  
+  .select2-results__option--selected{
+    background-color: #e0a4ea !important;
+  }
+  
+  .select2-selection__choice{
+    gap: 1px;
+  }
+  
+  .select2-container--bootstrap-5{
+    width: 50vw;
+  }

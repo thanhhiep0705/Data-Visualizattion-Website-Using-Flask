@@ -1,0 +1,72 @@
+{% extends "layout.html" %} {% block content %}
+<div class="py-3 px-5">
+  <h1 class="text-center m-4">Course Data Visualization Dashboard</h1>
+  <div>
+    <div class="row row-cols-auto justify-content-evenly">
+      {% for chart in graphsList %}
+      <div class=" p-3 col-xl-3 col-lg-4 col-md-6 col-12">
+        <div class="chart-container">
+          <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+            <span>{{chart['name']}}</span>
+            <img
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#myModal{{chart['chartId']}}"
+              src="../static/img/zoom-out.png"
+              height="28"
+              alt="Zoom icon"
+            />
+          </div>
+          <div class="chart-container-body">
+            <div class="chart" id="{{chart['chartId']}}"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="myModal{{chart['chartId']}}">
+        <div class="modal-dialog" style="max-width: 1000px">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header w-100">
+              <h4 class="modal-title">{{chart['name']}}</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="w-100 d-flex justify-content-center align-items-lg-center">
+              <div
+                class="chart overflow-auto"
+                id="{{chart['dialogId']}}"
+                style="height: 700px"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- plotly CDN -->
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+  var graphs1 = {{ graph1JSON | safe}};
+  Plotly.plot("chart1", graphs1);
+  Plotly.plot("dialog-chart1", graphs1, {});
+
+  var graphs2 = {{ graph2JSON | safe}};
+  Plotly.plot("chart2", graphs2, {});
+  Plotly.plot("dialog-chart2", graphs2, {});
+
+  var graphs3 = {{ graph3JSON | safe}};
+  Plotly.plot("chart3", graphs3, {});
+  Plotly.plot("dialog-chart3", graphs3, {});
+
+  var graphs4 = {{ graph4JSON | safe}};
+  Plotly.plot("chart4", graphs4, {});
+  Plotly.plot("dialog-chart4", graphs4, {});
+</script>
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}" />
+{% endblock %} {% endblock %}

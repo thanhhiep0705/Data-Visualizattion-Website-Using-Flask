@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block content %}
+<header>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+</header>
+
+
+<div class="mt-4 m-4">
+    <div class="d-flex gap-2">
+        <select class="form-select"
+                id="multiple-select-optgroup-field"
+                data-placeholder="Choose anything"
+                multiple>
+            <optgroup label="Subject">
+                <option>Computer Science</option>
+                <option>Data Scieance</option>
+            </optgroup>
+            <optgroup label="Language">
+                <option>Python</option>
+                <option>C++</option>
+            </optgroup>
+            <optgroup label="Framework">
+                <option>VueJS</option>
+                <option>ReactJS</option>
+            </optgroup>
+        </select>
+        <button type="button" class="btn btn-primary rounded-3 select2-search--hide">Submit</button>
+    </div>
+    {% if job|length > 0 %}
+    <div class="mt-4">
+        <h2 class="text-danger">FILTERED JOB</h2>
+        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+            {% for index,row in job.iterrows() %}
+            <div class="job-container p-0 col border border-1 border-dark"
+                 onclick="window.open('{{ row['Link'] }}', '_blank')">
+                <div
+                     class="job-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-dark">
+                    <span class="job-name text-primary p-1 overflow-ellipsis">{{ row['Name'] }}</span>
+                    <div class="job-rating p-1">
+                        <span>{{ row['Rating'] }}</span>
+                        <img height="16"
+                             src="../static/img/star.png"
+                             alt="Icon database" />
+                    </div>
+                </div>
+                <div class="job-info p-2">
+                    {% for column in ['Industry','Career', 'Tool', 'Framework' , 'Knowledge', 'Programing Language'] %}
+                    <div class="d-flex justify-content-between gap-2">
+                        <span class="fw-bold">{{column}}:</span>
+                        <p class="text-end">{{ row[column] }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="w-75 border border-2 border-info rounded-1 my-4"></div>
+    <div class="mt-4">
+        <h2 class="text-danger ">TOP JOB POSTING</h2>
+        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+            {% for index,row in top_job.iterrows() %}
+            <div class="job-container p-0 col border border-1 border-dark"
+                 onclick="window.open('{{ row['Link'] }}', '_blank')">
+                <div
+                     class="job-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-dark">
+                    <span class="job-name text-primary p-1 overflow-ellipsis">{{ row['Name'] }}</span>
+                    <div class="job-rating p-1">
+                        <span>{{ row['Rating'] }}</span>
+                        <img height="16"
+                             src="../static/img/star.png"
+                             alt="Icon database" />
+                    </div>
+                </div>
+                <div class="job-info p-2">
+                    {% for column in ['Industry','Career', 'Tool', 'Framework' , 'Knowledge', 'Programing Language'] %}
+                    <div class="d-flex justify-content-between gap-2">
+                        <span class="fw-bold">{{column}}:</span>
+                        <p class="text-end">{{ row[column] }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $('#multiple-select-optgroup-field').select2({
+        theme: "bootstrap-5",
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        closeOnSelect: false,
+        
+    });
+</script>
+
+
+{% block css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/job-finder.css') }}" />
+{% endblock %}
+{% endblock %}

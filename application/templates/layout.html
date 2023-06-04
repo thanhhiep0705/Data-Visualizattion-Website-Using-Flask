@@ -48,35 +48,32 @@
             <a class="nav-link"
                href="/about">About</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link"
-               href="/course">Course</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"
-               href="/job-posting">Job Posting</a>
-          </li>
-          <li id="navbar-dropdown" class="nav-item dropdown">
-            <a class="dropdown-toggle nav-link"
-               role="button"
-               id="dropdown-link"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
-              Manage Crawler
+
+          <li id="navbar-dropdown-2" class="nav-item dropdown">
+            <a class="dropdown-toggle nav-link" role="button" id="dropdown-link-2" data-bs-toggle="dropdown" aria-expanded="false">
+              Data Visualizations
             </a>
-            <ul class="dropdown-menu"
-                aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item dropdown-link"
-                   href="/course-crawler">Courses Crawler</a></li>
-              <li><a class="dropdown-item dropdown-link"
-                   href="/job-crawler">Job postings Crawler</a></li>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-link-2">
+              <li><a class="dropdown-item dropdown-link" href="/course-visualization">Course Data</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/job-visualization">Job Posting Data</a></li>
             </ul>
           </li>
+
+          <li id="navbar-dropdown-1" class="nav-item dropdown">
+            <a class="dropdown-toggle nav-link" role="button" id="dropdown-link-1" data-bs-toggle="dropdown" aria-expanded="false">
+              Search Functionality
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown-link-1">
+              <li><a class="dropdown-item dropdown-link" href="/course-finder">Course Finder</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/job-finder">Job Finder</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"
+               href="/manage-crawler">Manage Crawler</a>
+          </li>
         </ul>
-        <!-- <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>-->
       </div>
     </div>
   </nav>
@@ -98,23 +95,33 @@
 
     // Lấy danh sách các liên kết trong thanh điều hướng
     var navLinks = document.getElementById("navbar").querySelectorAll(".nav-link");
-    var dropdownLinks = document.getElementById("navbar-dropdown").querySelectorAll(".dropdown-link");
+    var dropdownLinks1 = document.getElementById("navbar-dropdown-1").querySelectorAll(".dropdown-link");
+    var dropdownLinks2 = document.getElementById("navbar-dropdown-2").querySelectorAll(".dropdown-link");
 
     // Kiểm tra từng liên kết để xác định liên kết nào có URL khớp với URL hiện tại
     navLinks.forEach(function (link) {
       if (link.href === currentUrl) {
-        link.classList.add("active"); // Thêm lớp "active" cho liên kết khớp
+        link.classList.add("active");
         return;
       }
     });
-    dropdownLinks.forEach(function (link) {
+    dropdownLinks1.forEach(function (link) {
       if (link.href === currentUrl) {
-        document.getElementById("dropdown-link").classList.add("active"); // Thêm lớp "active" cho liên kết khớp
+        document.getElementById("dropdown-link-1").classList.add("active");
+        link.classList.add("active");
+        return;
+      }
+    });
+    dropdownLinks2.forEach(function (link) {
+      if (link.href === currentUrl) {
+        document.getElementById("dropdown-link-2").classList.add("active");
+        link.classList.add("active");
         return;
       }
     });
   </script>
-
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
           crossorigin="anonymous"></script>

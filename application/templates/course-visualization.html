@@ -11,7 +11,7 @@
             <img
               type="button"
               data-bs-toggle="modal"
-              data-bs-target="#myModal"
+              data-bs-target="#myModal{{chart['chartId']}}"
               src="../static/img/zoom-out.png"
               height="28"
               alt="Zoom icon"
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="modal" id="myModal">
+      <div class="modal" id="myModal{{chart['chartId']}}">
         <div class="modal-dialog" style="max-width: 1000px">
           <div class="modal-content">
             <!-- Modal Header -->
@@ -33,7 +33,11 @@
             </div>
             <!-- Modal body -->
             <div class="w-100 d-flex justify-content-center align-items-lg-center">
-              <div class="chart overflow-auto" id="{{chart['dialogId']}}" style="height: 700px"></div>
+              <div
+                class="chart overflow-auto"
+                id="{{chart['dialogId']}}"
+                style="height: 700px"
+              ></div>
             </div>
           </div>
         </div>

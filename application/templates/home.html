@@ -1,8 +1,10 @@
 {% extends "layout.html" %} {% block content %}
-<div style="
+<div
+  style="
     height: 220px;
     background-image: url('../static//img/web-backgroud.jpg');
-  "></div>
+  "
+></div>
 <div class="d-flex flex-column gap-2 my-4">
   <!-- Hero Section -->
   <section class="hero">
@@ -20,12 +22,11 @@
       <h2>About Visualization Website</h2>
     </div>
     <p>
-      Visualization Website is a platform that collects data from various job
-      posting websites and online course platforms. We analyze and visualize
-      this data to provide insights and trends in the job market and the world
-      of online learning. Whether you are looking for the latest job
-      opportunities or seeking to enhance your skills through online courses,
-      Data Visualizer has got you covered.
+      Visualization Website is a platform that collects data from various job posting websites and
+      online course platforms. We analyze and visualize this data to provide insights and trends in
+      the job market and the world of online learning. Whether you are looking for the latest job
+      opportunities or seeking to enhance your skills through online courses, Data Visualizer has
+      got you covered.
     </p>
   </section>
 
@@ -36,30 +37,63 @@
       <h2 class="text-left">Features</h2>
     </div>
     <div class="row row-cols-auto gap-5 mt-4 m-auto">
-      <div class="feature col d-flex justify-content-around border border-primary rounded-3">
-        <img src="../../static/img/job-posting.png"
-             width="150"
-             height="100"
-             alt="Job Postings IMG" />
-        <div class="d-flex flex-column justify-content-between text-center">
-          <p class="px-1 py-2 text-body">
-            Explore and analyze trends in job postings
-          </p>
-          <a href="/job-posting"
-             class="btn btn-outline-primary mx-auto">Job Postings Analysis</a>
+      <div class="feature col d-flex gap-2 justify-content-around border border-primary rounded-3">
+        <img
+        class="rounded-2"
+          src="../../static/img/data-visualization.png"
+          width="150"
+          height="100"
+          alt="Visualization IMG"
+        />
+        <div class="d-flex flex-column gap-1 align-items-center justify-content-between text-center">
+          <p class="px-1  text-body">Explore and analyze trends in job postings</p>
+          <a href="/visualization" class="btn btn-outline-primary mx-auto">Job Data Visualization</a>
         </div>
       </div>
-      <div class="feature col d-flex justify-content-around border border-warning rounded-3">
-        <img src="../../static/img/courses.png"
-             width="150"
-             height="100"
-             alt="Couses Img" />
-        <div class="d-flex flex-column justify-content-between text-center">
-          <p class="px-1 py-2 text-body">
-            Explore and analyze trends in courses
-          </p>
-          <a href="/course"
-             class="btn btn-outline-warning mx-auto">Courses Analysis</a>
+
+      <div class="feature col d-flex gap-2 justify-content-around border border-primary rounded-3">
+        <img
+        class="rounded-2"
+          src="../../static/img/data-visualization.png"
+          width="150"
+          height="100"
+          alt="Visualization IMG"
+        />
+        <div class="d-flex flex-column gap-1 align-items-center justify-content-between text-center">
+          <p class="px-1  text-body">Explore and analyze trends in courses</p>
+          <a href="/visualization" class="btn btn-outline-primary mx-auto">Course Data Visualization</a>
+        </div>
+      </div>
+
+      <div class="feature col d-flex gap-2 justify-content-around border border-success rounded-3">
+        <img
+        class="rounded-2"
+          src="../../static/img/job-posting.png"
+          width="150"
+          height="100"
+          alt="Search IMG"
+        />
+        <div class="d-flex flex-column gap-1 align-items-center justify-content-between text-center">
+          <p class="px-1 text-body text-w">Search for courses that suit your individual needs</p>
+          <a href="/course-finder" class="btn btn-outline-success mx-auto"
+            >Course Finder</a
+          >
+        </div>
+      </div>
+
+      <div class="feature col d-flex gap-2 justify-content-around border border-success rounded-3">
+        <img
+        class="rounded-2"
+          src="../../static/img/job-posting.png"
+          width="150"
+          height="100"
+          alt="Search IMG"
+        />
+        <div class="d-flex flex-column gap-1 align-items-center justify-content-between text-center">
+          <p class="px-1 text-body text-w">Search for jobs that suit your individual needs</p>
+          <a href="/Job-finder" class="btn btn-outline-success mx-auto"
+            >Job Finder</a
+          >
         </div>
       </div>
     </div>
@@ -88,6 +122,5 @@
   </section>
 </div>
 {% block css %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/home.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
 {% endblock %} {% endblock %}
