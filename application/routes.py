@@ -1,6 +1,6 @@
 import os
 from application import app
-from flask import render_template, url_for
+from flask import render_template, request
 import pandas as pd
 import json
 import plotly
@@ -357,10 +357,11 @@ def about():
     ]
     return render_template('about.html', team_members=team_members)
 
-@app.route('/course-finder')
-def courseSearch():
-    # csv_url = url_for('static', filename='Course.csv')
-    # df = pd.read_csv(csv_url)
+@app.route('/course-finder', methods=['GET', 'POST'])
+def courseFinder():
+    selected_options = request.form.getlist('selected_options')
+
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the file path for the CSV file
@@ -371,12 +372,42 @@ def courseSearch():
     course = df.head(5)
     top_course = df.head(5)
 
-    return render_template('course-finder.html', course = course , top_course = top_course)
+    filter_datas = getFilterData()
+
+    return render_template('course-finder.html', course = course , top_course = top_course, selected_options = selected_options,filter_datas = filter_datas)
+
+def getFilterData():
+    filter_datas = [
+        {
+            'name': 'Subjects',
+            'value': [
+                'Computer Science', 'Web Development', 'Data Science', 'Microservices', 'Mobile Development', 'Business'
+            ]
+        },
+        {
+            'name': 'Frameworks',
+            'value': [
+                'VueJS', 'ReactJS', 'AngularJS', 'JQuery', 'MySQL', 'Django','LaravelJS'
+            ]
+        },
+        {
+            'name': 'Programing Language',
+            'value': [
+                'Python', 'Java', 'JavaScript', 'C++','Julia', 'Scala'
+            ]
+        },
+        
+        {
+            'name': 'Level',
+            'value': [
+                'Beginner', 'Intermediate','Advanced'
+            ]
+        }
+    ]
+    return filter_datas
 
 @app.route('/job-finder')
 def jobSearch():
-    # csv_url = url_for('static', filename='Course.csv')
-    # df = pd.read_csv(csv_url)
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the file path for the CSV file
