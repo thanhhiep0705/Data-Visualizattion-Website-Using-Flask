@@ -24,7 +24,7 @@
       </div>
 
       <div class="modal" id="myModal{{chart['chartId']}}">
-        <div class="modal-dialog" style="max-width: 1000px">
+        <div class="modal-dialog">
           <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header w-100">
@@ -32,11 +32,10 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <!-- Modal body -->
-            <div class="w-100 d-flex justify-content-center align-items-lg-center">
+            <div class="modal-body w-100 d-flex justify-content-center align-items-lg-center">
               <div
                 class="chart overflow-auto"
                 id="{{chart['dialogId']}}"
-                style="height: 700px"
               ></div>
             </div>
           </div>
