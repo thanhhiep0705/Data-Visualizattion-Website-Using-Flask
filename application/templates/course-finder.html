@@ -9,7 +9,7 @@
 
 
 <div class="mt-4 m-4">
-    <form class="d-flex gap-2 align-items-center"
+    <form class="d-flex gap-2"
           id="course-finder-form"
           action="{{ url_for('courseFinder') }}"
           method="POST">
@@ -28,7 +28,7 @@
         </select>
         <div>
             <button type="submit"
-                    class="btn btn-primary rounded-3 h-auto">Submit</button>
+                    class="btn btn-primary rounded-3 h-auto jus">Submit</button>
         </div>
     </form>
     {% if course|length > 0 %}

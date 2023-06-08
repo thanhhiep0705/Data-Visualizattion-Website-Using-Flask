@@ -514,7 +514,7 @@ def graph2(df):
     # subjects_to_plot = df_subject_time['Subject'].unique()[10:20]
     # df_subject_time = df_subject_time.query('Subject in @subjects_to_plot')
     fig = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
-    fig.update_layout(height=450, width=1080, xaxis={'visible': False}, margin=dict(t=0, l=0))
+    fig.update_layout(height=450, width=1000, xaxis={'visible': False}, margin=dict(t=0, l=0))
     fig_dialog = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
     fig_dialog.update_layout(height = 700, width =1000, xaxis={'visible': False, 'showticklabels': True, }, margin=dict(l=20, r=20, t=50, b=20), font=dict(size=10),legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0))
     return fig, fig_dialog
