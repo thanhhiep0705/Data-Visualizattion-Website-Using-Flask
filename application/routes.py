@@ -448,6 +448,15 @@ def courseVisualization():
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
+    fig5, fig5_dialog = graph5(df)
+    graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
+    graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
+
+    fig6, fig6_dialog = graph6(df)
+    graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
+    graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
+
+
     graphsData = [
         {
             'name':'Chart 1',
@@ -476,6 +485,20 @@ def courseVisualization():
             'dialogId': 'dialog-chart4',
             'graphData': graph4JSON,
             'graphDialogData': graph4_dialogJSON
+        },
+                        {
+            'name':'Chart 5',
+            'chartId':'chart5',
+            'dialogId': 'dialog-chart5',
+            'graphData': graph5JSON,
+            'graphDialogData': graph5_dialogJSON
+        },
+                                {
+            'name':'Chart 6',
+            'chartId':'chart6',
+            'dialogId': 'dialog-chart6',
+            'graphData': graph6JSON,
+            'graphDialogData': graph6_dialogJSON
         }
     ]
     return render_template('course-visualization.html', graphsData=graphsData)
@@ -530,6 +553,18 @@ def graph3(df):
     return fig, fig_dialog
 
 def graph4(df):
+    new_df = df.loc[:, ['Subject']]
+    df_subject_count = new_df['Subject'].value_counts().reset_index()
+    df_subject_count.columns = ['Subject', 'Total Courses']
+    fig = px.pie(df_subject_count, names="Subject", values="Total Courses", height= 400, width= 340)
+    fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
+    fig.update_traces(textposition='inside', textinfo='percent')
+    fig_dialog = px.pie(df_subject_count, names="Subject", values="Total Courses")
+    fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    return fig, fig_dialog
+
+def graph5(df):
     new_df = df.loc[:, ['Fee', 'Level', 'Subject']]
     new_df['Fee'] = new_df['Fee'].apply(convert_to_fee)
     new_df = new_df.groupby(['Subject', 'Level'])['Fee'].sum().reset_index()
@@ -538,6 +573,18 @@ def graph4(df):
     fig_dialog = px.bar(new_df, x='Subject', y='Fee', color='Level', barmode='stack')
     fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
     return fig, fig_dialog
+
+def graph6(df):
+    df_data_science = df[df['Subject'] == 'Computer Science']
+    programming_languages = df_data_science['Programing Language'].str.split(',').explode().str.strip().tolist()
+    language_counts = pd.Series(programming_languages).value_counts()
+    fig = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
+    fig_dialog = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
+    fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
+    fig.update_traces(textposition='inside', textinfo='percent')
+    fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    return fig ,fig_dialog
 
 @app.route('/job-visualization')
 def jobVisualization():
@@ -562,29 +609,37 @@ def jobVisualization():
     fig4 = px.bar(data_canada, x='year', y='pop')
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
 
-    graphsList = [
+    graphsData = [
         {
             'name':'Chart 1',
             'chartId':'chart1',
-            'dialogId': 'dialog-chart1'
+            'dialogId': 'dialog-chart1',
+            'graphData': graph1JSON,
+            'graphDialogData': graph1JSON
         },
         {
             'name':'Chart 2',
             'chartId':'chart2',
-            'dialogId': 'dialog-chart2'
+            'dialogId': 'dialog-chart2',
+            'graphData': graph2JSON,
+            'graphDialogData': graph1JSON
         },
         {
             'name':'Chart 3',
             'chartId':'chart3',
-            'dialogId': 'dialog-chart3'
+            'dialogId': 'dialog-chart3',
+            'graphData': graph3JSON,
+            'graphDialogData': graph1JSON
         },
-        {
+                {
             'name':'Chart 4',
             'chartId':'chart4',
-            'dialogId': 'dialog-chart4'
-        },
-    ]
+            'dialogId': 'dialog-chart4',
+            'graphData': graph4JSON,
+            'graphDialogData': graph1JSON
+        }
+        ]
 
-    return render_template('job-visualization.html', graph1JSON=graph1JSON,  graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, graphsList = graphsList)
+    return render_template('job-visualization.html', graphsData=graphsData)
 
 
