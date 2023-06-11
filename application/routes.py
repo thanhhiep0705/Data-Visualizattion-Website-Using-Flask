@@ -1,5 +1,6 @@
 import os
 import re
+from tkinter import Widget
 from application import app
 from flask import render_template, request
 import pandas as pd
@@ -361,6 +362,7 @@ def about():
 @app.route('/course-finder', methods=['GET', 'POST'])
 def courseFinder():
     selected_options = request.form.getlist('selected_options')
+    print(selected_options)
 
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -455,6 +457,8 @@ def courseVisualization():
     fig6, fig6_dialog = graph6(df)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
+    subjects = df['Subject'].unique()
+    listsubjects = list(enumerate(subjects))
 
 
     graphsData = [
@@ -493,15 +497,15 @@ def courseVisualization():
             'graphData': graph5JSON,
             'graphDialogData': graph5_dialogJSON
         },
-                                {
-            'name':'Chart 6',
-            'chartId':'chart6',
-            'dialogId': 'dialog-chart6',
-            'graphData': graph6JSON,
-            'graphDialogData': graph6_dialogJSON
-        }
+        #                         {
+        #     'name':'Chart 6',
+        #     'chartId':'chart6',
+        #     'dialogId': 'dialog-chart6',
+        #     'graphData': graph6JSON,
+        #     'graphDialogData': graph6_dialogJSON
+        # }
     ]
-    return render_template('course-visualization.html', graphsData=graphsData)
+    return render_template('course-visualization.html', graphsData=graphsData, graph6JSON= graph6JSON,graph6_dialogJSON=graph6_dialogJSON, listSubjects =listsubjects )
 
 def convert_to_hours(time):
     match = re.match(r'(\d+(?:\.\d+)?)', str(time))
@@ -527,6 +531,25 @@ def graph1(df):
     fig_dialog = px.pie(df_subject_enroll, names="Subject", values="Total Enroll")
     fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
     fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    # dropdown_options = [dict(label='All',
+    #                     method='update',
+    #                     args=[{'visible': [True] * len(df_subject_enroll)}])]
+    # for subject in df_subject_enroll['Subject']:
+    #     dropdown_options.append({'label': subject, 'method': 'update', 'args': [{'visible': [subject == item for item in df_subject_enroll['Subject'].tolist()]}]})
+
+    # # Add the dropdown menu to the layout
+    # fig_dialog.update_layout(
+    #     updatemenus=[
+    #         dict(
+    #             buttons=dropdown_options,
+    #             direction='down',
+    #             showactive=True,
+    #             xanchor='left',
+    #             yanchor='top',
+    #         ),
+    #     ]
+    # )
+
     return fig, fig_dialog
 
 def graph2(df):
@@ -539,7 +562,7 @@ def graph2(df):
     fig = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
     fig.update_layout(height=450, width=1000, xaxis={'visible': False}, margin=dict(t=0, l=0))
     fig_dialog = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
-    fig_dialog.update_layout(height = 700, width =1000, xaxis={'visible': False, 'showticklabels': True, }, margin=dict(l=20, r=20, t=50, b=20), font=dict(size=10),legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0))
+    fig_dialog.update_layout(height = 700, width =1000, xaxis={'visible': False, 'showticklabels': True, }, margin=dict(l=20, r=20, t=50, b=20), font=dict(size=10),legend=dict(orientation = "h", yanchor="bottom",y=-1.2,xanchor="left", x=0))
     return fig, fig_dialog
 
 def graph3(df):
@@ -550,6 +573,7 @@ def graph3(df):
     fig.update_layout(height=450, width=450, xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
     fig_dialog = px.bar(new_df, x='Subject', y='Time', color='Level', barmode='stack')
     fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
+    
     return fig, fig_dialog
 
 def graph4(df):
@@ -575,16 +599,23 @@ def graph5(df):
     return fig, fig_dialog
 
 def graph6(df):
-    df_data_science = df[df['Subject'] == 'Computer Science']
-    programming_languages = df_data_science['Programing Language'].str.split(',').explode().str.strip().tolist()
-    language_counts = pd.Series(programming_languages).value_counts()
-    fig = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
-    fig_dialog = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
-    fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent')
-    fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
-    return fig ,fig_dialog
+    list_fig = []
+    list_fig_dialog = []
+    for subject in df['Subject'].unique().tolist():
+        df_data_science = df[df['Subject'] == subject]
+        programming_languages = df_data_science['Programing Language'].str.split(',').explode().str.strip().tolist()
+        language_counts = pd.Series(programming_languages).value_counts()
+        fig = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
+        fig_dialog = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
+        fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
+        fig.update_traces(textposition='inside', textinfo='percent')
+        list_fig.append(fig)
+        fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        list_fig_dialog.append(fig_dialog)
+    return list_fig ,list_fig_dialog
+
+
 
 @app.route('/job-visualization')
 def jobVisualization():

@@ -42,12 +42,62 @@
         </div>
       </div>
       {% endfor %}
+      <div class="chart-container col p-0">
+        <div class="chart-container-header d-flex justify-content-between align-items-md-center">
+          <span>Chart 6</span>
+          <img type="button"
+               data-bs-toggle="modal"
+               data-bs-target="#myModalchart6"
+               src="../static/img/zoom-out.png"
+               height="28"
+               alt="Zoom icon" />
+        </div>
+        <div class="chart-container-body flex justify-content-center align-items-center">
+          <div class="chart"
+               id="chart6"></div>
+        </div>
+      </div>
+
+      <div class="modal"
+           id="myModalchart6">
+        <div class="modal-dialog"
+             style="max-width: 1200px">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header w-100">
+              <h4 class="modal-title">Chart 6</h4>
+              <button type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"></button>
+            </div>
+            <div class="w-50 m-3">
+              <label for="subject-select" class="pb-1">Select Subject</label>
+              <select id="subject-select"
+                      aria-label=""
+                      class="form-select">
+                {% for index, subject in listSubjects %}
+                <option value="{{ index }}"
+                        {% if selectedSubject==index %}selected{% endif %}>{{ subject }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Modal body -->
+            <div class="w-100 d-flex justify-content-center align-items-lg-center">
+              <div class="chart overflow-auto"
+                   id="dialog-chart6">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 <!-- plotly CDN -->
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 <script type="text/javascript">
 
   var graphs = {{ graphsData| tojson }};
@@ -60,6 +110,27 @@
     Plotly.plot(graph.chartId, graphData, {});
     Plotly.plot(graph.dialogId, graphDialogData, {});
   }
+
+  var selectedSubject = 0;
+
+  var graphs6 = {{ graph6JSON | safe }};
+  var graph6Dialog = {{ graph6_dialogJSON | safe }};
+  Plotly.plot('chart6', graphs6[selectedSubject], {});
+  Plotly.plot('dialog-chart6', graph6Dialog[selectedSubject], {});
+
+  function handleSubjectChange() {
+    selectedSubject = parseInt($('#subject-select').val());
+
+    // Update the plots with the new subject
+    Plotly.react('chart6', graphs6[selectedSubject], {});
+    Plotly.react('dialog-chart6', graph6Dialog[selectedSubject], {});
+  }
+
+  // Event listener for subject dropdown change
+  $(document).ready(function () {
+    $('#subject-select').change(handleSubjectChange);
+  });
+
 </script>
 
 {% block css %}

@@ -7,7 +7,6 @@
           href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 </header>
 
-
 <div class="mt-4 m-4">
     <form class="d-flex gap-2"
           id="course-finder-form"
@@ -26,11 +25,20 @@
             </optgroup>
             {% endfor %}
         </select>
-        <div>
-            <button type="submit"
-                    class="btn btn-primary rounded-3 h-auto jus">Submit</button>
-        </div>
+        <button type="submit"
+                id="clear-button"
+                class="border-0 bg-body">
+            <img height="24"
+                 src="../static/img/clear-filter.png"
+                 alt="Icon clear" />
+        </button>
+
+        <button type="submit"
+                class="input-group-text btn-primary px-4">Submit
+        </button>
+
     </form>
+
     {% if course|length > 0 %}
     <div class="mt-4">
         <h2 class="text-danger">FILTERED COURSE</h2>
@@ -80,7 +88,7 @@
                     </div>
                 </div>
                 <div class="course-info p-2">
-                    {% for column in ['Subject','Enroll', 'Fee',  'Programing Language', 'Organization'] %}
+                    {% for column in ['Subject','Enroll', 'Fee', 'Programing Language', 'Organization'] %}
                     <div class="d-flex justify-content-between gap-1">
                         <span class="fw-bold">{{column}}:</span>
                         <p class="text-end">{{ row[column] }}</p>
@@ -98,17 +106,19 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('#multiple-select-optgroup-field').select2({
-            theme: "bootstrap-5",
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder'),
-            closeOnSelect: false,
-        });
+    $('#multiple-select-optgroup-field').select2({
+        theme: "bootstrap-5",
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        closeOnSelect: false,
+    });
+    // Set selected options after DOM load
+    var selectedOptions = {{ selected_options| tojson}};
+    $('#multiple-select-optgroup-field').val(selectedOptions);
+    $('#multiple-select-optgroup-field').trigger('change');
 
-        // Set selected options after DOM load
-        var selectedOptions = {{ selected_options| tojson}};
-        $('#multiple-select-optgroup-field').val(selectedOptions);
+    $('#clear-button').click(function () {
+        $('#multiple-select-optgroup-field').val(null);
         $('#multiple-select-optgroup-field').trigger('change');
     });
 </script>
