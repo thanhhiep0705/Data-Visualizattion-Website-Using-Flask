@@ -9,6 +9,9 @@ import plotly
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
+import logging
 
 app.config['ACTIVE_TAB'] = '/'
 
@@ -425,6 +428,13 @@ def jobSearch():
 
 @app.route('/course-visualization')
 def courseVisualization():
+    cloud_config= {
+        'secure_connect_bundle': 'application/secure-connect-visualization.zip'
+    }
+    auth_provider = PlainTextAuthProvider('UnAlLRtFLyrWxSznNlRESLkf', 'hc43G55PBWflWTg0sdqr9AIsiA8tMjP6OHTs1_wXZwyADGoORPLUu8OEGyMUTK5ftdgJ6CZJwMTqWtjJKXQbt_7NjwnLgaEQCD27sTHvXLFu7vU4XoRtZpucHkXFn.OY')
+    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    session = cluster.connect()
+
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the file path for the CSV file
@@ -432,29 +442,29 @@ def courseVisualization():
     df = pd.read_csv(csv_path, encoding='latin1')
     # Graph One
     
-    fig1, fig1_dialog = graph1(df)
+    fig1, fig1_dialog = graph1(session)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
-    fig2, fig2_dialog = graph2(df)
+    fig2, fig2_dialog = graph2(session)
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     graph2_dialogJSON = json.dumps(fig2_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph three
-    fig3, fig3_dialog = graph3(df)
+    fig3, fig3_dialog = graph3(session)
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     graph3_dialogJSON = json.dumps(fig3_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig4, fig4_dialog = graph4(df)
+    fig4, fig4_dialog = graph4(session)
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig5, fig5_dialog = graph5(df)
+    fig5, fig5_dialog = graph5(session)
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig6, fig6_dialog = graph6(df)
+    fig6, fig6_dialog = graph6(session)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
     subjects = df['Subject'].unique()
@@ -505,7 +515,10 @@ def courseVisualization():
         #     'graphDialogData': graph6_dialogJSON
         # }
     ]
-    return render_template('course-visualization.html', graphsData=graphsData, graph6JSON= graph6JSON,graph6_dialogJSON=graph6_dialogJSON, listSubjects =listsubjects )
+
+    session.shutdown()
+    cluster.shutdown()
+    return render_template('course-visualization.html', graphsData=graphsData)
 
 def convert_to_hours(time):
     match = re.match(r'(\d+(?:\.\d+)?)', str(time))
@@ -520,10 +533,15 @@ def convert_to_fee(fee):
             return float(match.group())
     return 0
 
-def graph1(df):
-    new_df = df.loc[:, ['Enroll', 'Subject']]
-    new_df['Enroll'] = new_df['Enroll'].apply(convert_to_hours)
-    df_subject_enroll = new_df.groupby('Subject')['Enroll'].sum().reset_index()
+#thong ke so luong hoc vien theo tưng linh vuc (subject)
+def graph1(session):
+    query = 'select enroll, subject from sample.course;'
+    result = session.execute(query)
+    #new_df = df.loc[:, ['Enroll', 'Subject']]
+    new_df = pd.DataFrame(list(result))
+    print(new_df)
+    new_df['enroll'] = new_df['enroll'].apply(convert_to_hours)
+    df_subject_enroll = new_df.groupby('subject')['enroll'].sum().reset_index()
     df_subject_enroll.columns = ['Subject', 'Total Enroll']
     fig = px.pie(df_subject_enroll, names="Subject", values="Total Enroll", height= 400, width= 340)
     fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
@@ -552,10 +570,13 @@ def graph1(df):
 
     return fig, fig_dialog
 
-def graph2(df):
-    new_df = df.loc[:, ['Time', 'Subject']]
-    new_df['Time'] = new_df['Time'].apply(convert_to_hours)
-    df_subject_time = new_df.groupby('Subject')['Time'].mean().reset_index()
+def graph2(session):
+    query = 'select time, subject from sample.course;'
+    result = session.execute(query)
+    #new_df = df.loc[:, ['Time', 'Subject']]
+    new_df = pd.DataFrame(list(result))
+    new_df['time'] = new_df['time'].apply(convert_to_hours)
+    df_subject_time = new_df.groupby('subject')['time'].mean().reset_index()
     df_subject_time.columns = ['Subject', 'Average Time']
     # subjects_to_plot = df_subject_time['Subject'].unique()[10:20]
     # df_subject_time = df_subject_time.query('Subject in @subjects_to_plot')
@@ -565,20 +586,26 @@ def graph2(df):
     fig_dialog.update_layout(height = 700, width =1000, xaxis={'visible': False, 'showticklabels': True, }, margin=dict(l=20, r=20, t=50, b=20), font=dict(size=10),legend=dict(orientation = "h", yanchor="bottom",y=-1.2,xanchor="left", x=0))
     return fig, fig_dialog
 
-def graph3(df):
-    new_df = df.loc[:, ['Time', 'Level', 'Subject']]
-    new_df['Time'] = new_df['Time'].apply(convert_to_hours)
-    new_df = new_df.groupby(['Subject', 'Level'])['Time'].mean().reset_index()
-    fig = px.bar(new_df, x='Subject', y='Time', color='Level', barmode='stack')
+def graph3(session):
+    query = 'select time, level, subject from sample.course;'
+    result = session.execute(query)
+    new_df = pd.DataFrame(list(result))
+    # new_df = df.loc[:, ['Time', 'Level', 'Subject']]
+    new_df['time'] = new_df['time'].apply(convert_to_hours)
+    new_df = new_df.groupby(['subject', 'level'])['time'].mean().reset_index()
+    fig = px.bar(new_df, x='subject', y='time', color='level', barmode='stack')
     fig.update_layout(height=450, width=450, xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
-    fig_dialog = px.bar(new_df, x='Subject', y='Time', color='Level', barmode='stack')
+    fig_dialog = px.bar(new_df, x='subject', y='time', color='level', barmode='stack')
     fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
     
     return fig, fig_dialog
 
-def graph4(df):
-    new_df = df.loc[:, ['Subject']]
-    df_subject_count = new_df['Subject'].value_counts().reset_index()
+def graph4(session):
+    query = 'select subject from sample.course;'
+    result = session.execute(query)
+    new_df = pd.DataFrame(list(result))
+    #new_df = df.loc[:, ['Subject']]
+    df_subject_count = new_df['subject'].value_counts().reset_index()
     df_subject_count.columns = ['Subject', 'Total Courses']
     fig = px.pie(df_subject_count, names="Subject", values="Total Courses", height= 400, width= 340)
     fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
@@ -588,22 +615,28 @@ def graph4(df):
     fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
     return fig, fig_dialog
 
-def graph5(df):
-    new_df = df.loc[:, ['Fee', 'Level', 'Subject']]
-    new_df['Fee'] = new_df['Fee'].apply(convert_to_fee)
-    new_df = new_df.groupby(['Subject', 'Level'])['Fee'].sum().reset_index()
-    fig = px.bar(new_df, x='Subject', y='Fee', color='Level', barmode='stack')
+def graph5(session):
+    #new_df = df.loc[:, ['Fee', 'Level', 'Subject']]
+    query = 'select fee, level, subject from sample.course;'
+    result = session.execute(query)
+    new_df = pd.DataFrame(list(result))
+    new_df['fee'] = new_df['fee'].apply(convert_to_fee)
+    new_df = new_df.groupby(['subject', 'level'])['fee'].sum().reset_index()
+    fig = px.bar(new_df, x='subject', y='fee', color='level', barmode='stack')
     fig.update_layout(height=450, width=450, xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
-    fig_dialog = px.bar(new_df, x='Subject', y='Fee', color='Level', barmode='stack')
+    fig_dialog = px.bar(new_df, x='subject', y='fee', color='level', barmode='stack')
     fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
     return fig, fig_dialog
 
-def graph6(df):
+def graph6(session):
+    query = 'select subject, language from sample.course;'
+    result = session.execute(query)
+    df = pd.DataFrame(list(result))
     list_fig = []
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
-        df_data_science = df[df['Subject'] == subject]
-        programming_languages = df_data_science['Programing Language'].str.split(',').explode().str.strip().tolist()
+        df_data_science = df[df['subject'] == subject]
+        programming_languages = df_data_science['language'].str.split(',').explode().str.strip().tolist()
         language_counts = pd.Series(programming_languages).value_counts()
         fig = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
         fig_dialog = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
@@ -612,8 +645,17 @@ def graph6(df):
         list_fig.append(fig)
         fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
         fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+
         list_fig_dialog.append(fig_dialog)
     return list_fig ,list_fig_dialog
+
+def graph7():
+    CASSANDRA_IP = '127.0.0.1'
+    cluster = Cluster([CASSANDRA_IP])
+    session = cluster.connect()
+    rows = session.execute("SELECT release_version FROM system.local")
+    for row in rows:
+        print(row.release_version)
 
 
 
