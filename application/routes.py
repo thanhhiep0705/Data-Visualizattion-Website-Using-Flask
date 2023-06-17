@@ -12,6 +12,7 @@ import plotly.io as pio
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 import logging
+import numpy as np
 
 app.config['ACTIVE_TAB'] = '/'
 
@@ -366,48 +367,152 @@ def about():
 def courseFinder():
     selected_options = request.form.getlist('selected_options')
     print(selected_options)
-
-
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the file path for the CSV file
     csv_path = os.path.join(current_dir, 'static', 'Course.csv')
 
+    cloud_config= {
+        'secure_connect_bundle': 'application/secure-connect-visualization.zip'
+    }
+    auth_provider = PlainTextAuthProvider('UnAlLRtFLyrWxSznNlRESLkf', 'hc43G55PBWflWTg0sdqr9AIsiA8tMjP6OHTs1_wXZwyADGoORPLUu8OEGyMUTK5ftdgJ6CZJwMTqWtjJKXQbt_7NjwnLgaEQCD27sTHvXLFu7vU4XoRtZpucHkXFn.OY')
+    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    session = cluster.connect()
     # Load the CSV file into a DataFrame
-    df = pd.read_csv(csv_path, encoding='latin1')
-    course = df.head(5)
-    top_course = df.head(5)
+    #df = pd.read_csv(csv_path, encoding='latin1')
 
-    filter_datas = getFilterData()
+    query = 'select name, subject, enroll, organization, language, fee, framework, level, rating, link from sample.course;'
+    rs = session.execute(query)
+    df = pd.DataFrame(list(rs))
+    
+    course = getSelectedCourses(selected_options,df)
+
+    # course = df.head(5)
+    top_course = getTopCourses(df)
+
+    #get filter data
+
+    filter_datas = getFilterData(df)
 
     return render_template('course-finder.html', course = course , top_course = top_course, selected_options = selected_options,filter_datas = filter_datas)
 
-def getFilterData():
+def getTopCourses(df):
+    df_top = df.sort_values(by = 'rating', ascending=False).head(10)
+    return df_top
+
+def getSelectedCourses(options, df):
+    subjects = []
+    frameworks = []
+    languages = []
+    levels = []
+    for key in options:
+        if key.find('Subjects') != -1:
+            value = key.split(':')[1].strip().lower()
+            subjects.append(value)
+        if key.find('Frameworks') != - 1:
+            value = key.split(':')[1].strip().lower()
+            frameworks.append(value)
+        if key.find('Programing Language') != - 1:
+            value = key.split(':')[1].strip().lower()
+            frameworks.append(value)
+        if key.find('Level') != - 1:
+            value = key.split(':')[1].strip().lower()
+            levels.append(value)
+    
+    #get equivalent courses from df
+    df_subject = pd.DataFrame()
+    df_framework = pd.DataFrame()
+    df_language = pd.DataFrame()
+    df_level = pd.DataFrame()
+    df_course = pd.DataFrame()
+    if (len(subjects) != 0):
+        for subject in subjects:
+            temp = df.loc[df['subject'].map(str.lower).str.contains(subject)]
+            df_subject = df_subject.append(temp, ignore_index=False)
+    
+    if (len(frameworks) != 0):
+        for framework in frameworks:
+            temp = df.loc[df['framework'].map(str.lower).str.contains(framework)]
+            df_framework = df_framework.append(temp, ignore_index=False)
+    
+    if (len(languages) != 0):
+        for language in languages:
+            temp = df.loc[df['language'].map(str.lower).str.contains(language)]
+            df_language = df_language.append(temp, ignore_index=False)
+    
+    if (len(levels) != 0):
+        for level in levels:
+            temp = df.loc[df['level'].map(str.lower).str.contains(level)]
+            df_level = df_level.append(temp, ignore_index=False)
+
+    #check empty
+    if (df_subject.empty == False):
+        df_course = df_course.append(df_subject)
+    
+    if (df_framework.empty == False):
+        df_course = df_course.append(df_framework)
+
+    if (df_language.empty == False):
+        df_course = df_course.append(df_language)
+    
+    if (df_level.empty == False):
+        df_course = df_course.append(df_level)
+
+    df_course = df_course.drop_duplicates(keep='first')
+
+    return df_course
+
+def getNormalizedArray(array):
+    result = []
+    for row in array:
+        rs=[]
+        if row.find(',') != -1:
+            rs = row.split(",")
+            rs = list(map(str.strip, rs))
+            for item in rs:
+                if item.title().strip() not in result:
+                    result.append(item.title())
+        else: 
+            if row.title().strip() not in result:
+                result.append(row.title().strip())
+
+    return result
+
+def getFilterData(df):
+    subjects = [x.title() for x in df.subject.unique()]
+    levels = [x.title() for x in df.level.unique()]
+    frameworks = getNormalizedArray(df.framework.unique())
+    languages = getNormalizedArray(df.language.unique())
+
     filter_datas = [
         {
             'name': 'Subjects',
-            'value': [
-                'Computer Science', 'Web Development', 'Data Science', 'Microservices', 'Mobile Development', 'Business'
-            ]
+            'value': subjects
+            # [
+            #     'Computer Science', 'Web Development', 'Data Science', 'Microservices', 'Mobile Development', 'Business'
+            # ]
         },
         {
             'name': 'Frameworks',
-            'value': [
-                'VueJS', 'ReactJS', 'AngularJS', 'JQuery', 'MySQL', 'Django','LaravelJS'
-            ]
+            'value': frameworks
+            # [
+            #     'VueJS', 'ReactJS', 'AngularJS', 'JQuery', 'MySQL', 'Django','LaravelJS'
+            # ]
         },
         {
             'name': 'Programing Language',
-            'value': [
-                'Python', 'Java', 'JavaScript', 'C++','Julia', 'Scala'
-            ]
+            'value': languages
+            # [
+            #     'Python', 'Java', 'JavaScript', 'C++','Julia', 'Scala'
+            # ]
         },
         
         {
             'name': 'Level',
-            'value': [
-                'Beginner', 'Intermediate','Advanced'
-            ]
+            'value': levels
+            # [
+            #     'Beginner', 'Intermediate','Advanced'
+            # ]
         }
     ]
     return filter_datas

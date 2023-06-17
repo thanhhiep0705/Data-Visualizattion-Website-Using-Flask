@@ -45,22 +45,22 @@
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in course.iterrows() %}
             <div class="course-container p-0 col border border-1 border-info"
-                 onclick="window.open('{{ row['Link'] }}', '_blank')">
+                 onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
                      class="course-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
-                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['Name'] }}</span>
+                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['Rating'] }}</p>
+                        <p class="fw-bold m-0">{{ row['rating'] }}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
                 <div class="course-info p-2">
-                    {% for column in ['Subject','Enroll', 'Fee', 'Programing Language', 'Organization'] %}
+                    {% for column in ['subject','enroll', 'fee', 'language', 'organization','level'] %}
                     <div class="d-flex justify-content-between gap-2">
-                        <span class="fw-bold">{{column}}:</span>
-                        <p class="text-end">{{ row[column] }}</p>
+                        <span class="fw-bold text-capitalize">{{column}}:</span>
+                        <p class="text-end text-capitalize">{{ row[column] }}</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -76,22 +76,22 @@
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in top_course.iterrows() %}
             <div class="course-container p-0 col border border-1 border-info"
-                 onclick="window.open('{{ row['Link'] }}', '_blank')">
+                 onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
                      class="course-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
-                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['Name'] }}</span>
+                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['Rating'] }}</p>
+                        <p class="fw-bold m-0">{{ row['rating'] }}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
                 <div class="course-info p-2">
-                    {% for column in ['Subject','Enroll', 'Fee', 'Programing Language', 'Organization'] %}
+                    {% for column in ['subject','enroll', 'fee', 'language', 'organization','level'] %}
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold">{{column}}:</span>
-                        <p class="text-end">{{ row[column] }}</p>
+                        <span class="fw-bold text-capitalize">{{column}}:</span>
+                        <p class="text-end text-capitalize">{{ row[column] }}</p>
                     </div>
                     {% endfor %}
                 </div>
