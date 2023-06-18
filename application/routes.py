@@ -15,6 +15,10 @@ import logging
 import numpy as np
 
 app.config['ACTIVE_TAB'] = '/'
+bundlepath = 'application/secure-connect-course-data.zip'
+clientId = 'URRrzRFMRvuBIZmLFumeqhvl'
+clientSecret = '++uM_E,5pH2kGnzZTqpYGU,E,GimsdCU5g_XtTckupaBmIkeMT9kaxAP82SgAr72t4w.I4zUsq.TU6.z4xihUYHgG4Y6AOiPjl-mRNk.6DxLYngZT025ZWF05+Hqo1l5'
+keyspace = 'course_data'
 
 @app.route('/')
 def index():
@@ -26,6 +30,7 @@ def test():
 # Dữ liệu mẫu
     x_data = [1, 2, 3, 4, 5]
     y_data = [10, 15, 7, 12, 8]
+    
 
     # Tạo biểu đồ
     fig = go.Figure(data=go.Scatter(x=x_data, y=y_data, mode='lines'))
@@ -367,19 +372,13 @@ def about():
 def courseFinder():
     selected_options = request.form.getlist('selected_options')
     print(selected_options)
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Construct the file path for the CSV file
-    csv_path = os.path.join(current_dir, 'static', 'Course.csv')
 
     cloud_config= {
-        'secure_connect_bundle': 'application/secure-connect-visualization.zip'
+        'secure_connect_bundle': bundlepath
     }
-    auth_provider = PlainTextAuthProvider('UnAlLRtFLyrWxSznNlRESLkf', 'hc43G55PBWflWTg0sdqr9AIsiA8tMjP6OHTs1_wXZwyADGoORPLUu8OEGyMUTK5ftdgJ6CZJwMTqWtjJKXQbt_7NjwnLgaEQCD27sTHvXLFu7vU4XoRtZpucHkXFn.OY')
+    auth_provider = PlainTextAuthProvider(clientId, clientSecret)
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
-    # Load the CSV file into a DataFrame
-    #df = pd.read_csv(csv_path, encoding='latin1')
 
     query = 'select name, subject, enroll, organization, language, fee, framework, level, rating, link from sample.course;'
     rs = session.execute(query)
@@ -534,18 +533,11 @@ def jobSearch():
 @app.route('/course-visualization')
 def courseVisualization():
     cloud_config= {
-        'secure_connect_bundle': 'application/secure-connect-visualization.zip'
+        'secure_connect_bundle': bundlepath
     }
-    auth_provider = PlainTextAuthProvider('UnAlLRtFLyrWxSznNlRESLkf', 'hc43G55PBWflWTg0sdqr9AIsiA8tMjP6OHTs1_wXZwyADGoORPLUu8OEGyMUTK5ftdgJ6CZJwMTqWtjJKXQbt_7NjwnLgaEQCD27sTHvXLFu7vU4XoRtZpucHkXFn.OY')
+    auth_provider = PlainTextAuthProvider(clientId, clientSecret)
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Construct the file path for the CSV file
-    csv_path = os.path.join(current_dir, 'static', 'Course.csv')
-    df = pd.read_csv(csv_path, encoding='latin1')
-    # Graph One
     
     fig1, fig1_dialog = graph1(session)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
@@ -569,56 +561,93 @@ def courseVisualization():
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig6, fig6_dialog = graph6(session)
+    fig6, fig6_dialog,listSubjects6  = graph6(session)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
-    subjects = df['Subject'].unique()
-    listsubjects = list(enumerate(subjects))
+
+    fig7, fig7_dialog,listSubjects7  = graph7(session)
+    graph7JSON = json.dumps(fig7, cls=plotly.utils.PlotlyJSONEncoder)
+    graph7_dialogJSON = json.dumps(fig7_dialog, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+    fig8, fig8_dialog,listSubjects8  = graph8(session)
+    graph8JSON = json.dumps(fig8, cls=plotly.utils.PlotlyJSONEncoder)
+    graph8_dialogJSON = json.dumps(fig8_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
     graphsData = [
         {
-            'name':'Chart 1',
+            'name':'Enrolls by Subject',
             'chartId':'chart1',
             'dialogId': 'dialog-chart1',
             'graphData': graph1JSON,
-            'graphDialogData': graph1_dialogJSON
+            'graphDialogData': graph1_dialogJSON,
+            'haveFilter': False,
+            'filter': []
         },
         {
-            'name':'Chart 2',
+            'name':'Courses by Subject',
             'chartId':'chart2',
             'dialogId': 'dialog-chart2',
             'graphData': graph2JSON,
-            'graphDialogData': graph2_dialogJSON
+            'graphDialogData': graph2_dialogJSON,
+            'haveFilter': False,
+            'filter': []
         },
         {
-            'name':'Chart 3',
+            'name':'Average Time by Subject',
             'chartId':'chart3',
             'dialogId': 'dialog-chart3',
             'graphData': graph3JSON,
-            'graphDialogData': graph3_dialogJSON
+            'graphDialogData': graph3_dialogJSON,
+            'haveFilter': False,
+            'filter': []
         },
-                {
-            'name':'Chart 4',
+        {
+            'name':'Average Fee by Subject',
             'chartId':'chart4',
             'dialogId': 'dialog-chart4',
             'graphData': graph4JSON,
-            'graphDialogData': graph4_dialogJSON
+            'graphDialogData': graph4_dialogJSON,
+            'haveFilter': False,
+            'filter': []
         },
-                        {
-            'name':'Chart 5',
+        {
+            'name':'Top Technologies',
             'chartId':'chart5',
             'dialogId': 'dialog-chart5',
             'graphData': graph5JSON,
-            'graphDialogData': graph5_dialogJSON
+            'graphDialogData': graph5_dialogJSON,
+            'haveFilter': False,
+            'filter': []
         },
-        #                         {
-        #     'name':'Chart 6',
-        #     'chartId':'chart6',
-        #     'dialogId': 'dialog-chart6',
-        #     'graphData': graph6JSON,
-        #     'graphDialogData': graph6_dialogJSON
-        # }
+        {
+            'name':'Proportion of programming languages',
+            'chartId':'chart6',
+            'dialogId': 'dialog-chart6',
+            'graphData': graph6JSON,
+            'graphDialogData': graph6_dialogJSON,
+            'haveFilter': True,
+            'filter': listSubjects6
+        },
+        {
+            'name':'Proportion of frameworks',
+            'chartId':'chart7',
+            'dialogId': 'dialog-chart7',
+            'graphData': graph7JSON,
+            'graphDialogData': graph7_dialogJSON,
+            'haveFilter': True,
+            'filter': listSubjects7
+        },
+        {
+            'name':'Proportion of tools',
+            'chartId':'chart8',
+            'dialogId': 'dialog-chart8',
+            'graphData': graph8JSON,
+            'graphDialogData': graph8_dialogJSON,
+            'haveFilter': True,
+            'filter': listSubjects8
+        },
     ]
 
     session.shutdown()
@@ -640,19 +669,16 @@ def convert_to_fee(fee):
 
 #thong ke so luong hoc vien theo tưng linh vuc (subject)
 def graph1(session):
-    query = 'select enroll, subject from sample.course;'
+    query = f'select * from {keyspace}.subject_enroll;'
     result = session.execute(query)
-    #new_df = df.loc[:, ['Enroll', 'Subject']]
-    new_df = pd.DataFrame(list(result))
-    print(new_df)
-    new_df['enroll'] = new_df['enroll'].apply(convert_to_hours)
-    df_subject_enroll = new_df.groupby('subject')['enroll'].sum().reset_index()
-    df_subject_enroll.columns = ['Subject', 'Total Enroll']
-    fig = px.pie(df_subject_enroll, names="Subject", values="Total Enroll", height= 400, width= 340)
-    fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Total Enroll']
+    fig = px.pie(df, names="Subject", values="Total Enroll", height= 420, width= 420)
+    fig.update_layout(showlegend=False, margin=dict(t=35, l=0))
     fig.update_traces(textposition='inside', textinfo='percent')
-    fig_dialog = px.pie(df_subject_enroll, names="Subject", values="Total Enroll")
-    fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+    
+    fig_dialog = px.pie(df, names="Subject", values="Total Enroll", height=1100, width= 1100)
+    fig_dialog.update_layout( legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
     fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
     # dropdown_options = [dict(label='All',
     #                     method='update',
@@ -676,91 +702,134 @@ def graph1(session):
     return fig, fig_dialog
 
 def graph2(session):
-    query = 'select time, subject from sample.course;'
+    query = f'select * from {keyspace}.subject_course;'
     result = session.execute(query)
-    #new_df = df.loc[:, ['Time', 'Subject']]
-    new_df = pd.DataFrame(list(result))
-    new_df['time'] = new_df['time'].apply(convert_to_hours)
-    df_subject_time = new_df.groupby('subject')['time'].mean().reset_index()
-    df_subject_time.columns = ['Subject', 'Average Time']
-    # subjects_to_plot = df_subject_time['Subject'].unique()[10:20]
-    # df_subject_time = df_subject_time.query('Subject in @subjects_to_plot')
-    fig = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
-    fig.update_layout(height=450, width=1000, xaxis={'visible': False}, margin=dict(t=0, l=0))
-    fig_dialog = px.bar(df_subject_time, x="Subject", y="Average Time", color='Subject')
-    fig_dialog.update_layout(height = 700, width =1000, xaxis={'visible': False, 'showticklabels': True, }, margin=dict(l=20, r=20, t=50, b=20), font=dict(size=10),legend=dict(orientation = "h", yanchor="bottom",y=-1.2,xanchor="left", x=0))
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Total Courses']
+    fig = px.pie(df, names="Subject", values="Total Courses",height= 420, width= 420)
+    fig.update_layout(showlegend=False, margin=dict(t=35, l=0))
+    fig.update_traces(textposition='inside', textinfo='percent')
+
+    fig_dialog = px.pie(df, names="Subject", values="Total Courses", height=1100, width= 1100)
+    fig_dialog.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
     return fig, fig_dialog
 
 def graph3(session):
-    query = 'select time, level, subject from sample.course;'
+    query = f'select subject, level, time from {keyspace}.subject_level_time;'
     result = session.execute(query)
-    new_df = pd.DataFrame(list(result))
-    # new_df = df.loc[:, ['Time', 'Level', 'Subject']]
-    new_df['time'] = new_df['time'].apply(convert_to_hours)
-    new_df = new_df.groupby(['subject', 'level'])['time'].mean().reset_index()
-    fig = px.bar(new_df, x='subject', y='time', color='level', barmode='stack')
-    fig.update_layout(height=450, width=450, xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
-    fig_dialog = px.bar(new_df, x='subject', y='time', color='level', barmode='stack')
-    fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Level', 'Time']
+    fig = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=450, width=350)
+    fig.update_layout(xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
+
+    fig_dialog = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=1100, width=1100)
+    fig_dialog.update_layout( margin=dict(l=0,r=0, t=50, b=15))
     
     return fig, fig_dialog
 
 def graph4(session):
-    query = 'select subject from sample.course;'
+    query = f'select subject, level, fee from {keyspace}.subject_level_fee;'
     result = session.execute(query)
-    new_df = pd.DataFrame(list(result))
-    #new_df = df.loc[:, ['Subject']]
-    df_subject_count = new_df['subject'].value_counts().reset_index()
-    df_subject_count.columns = ['Subject', 'Total Courses']
-    fig = px.pie(df_subject_count, names="Subject", values="Total Courses", height= 400, width= 340)
-    fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent')
-    fig_dialog = px.pie(df_subject_count, names="Subject", values="Total Courses")
-    fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Level', 'Fee']
+    fig = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=450, width=350)
+    fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
+    fig_dialog = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=1100, width=1100)
+    fig_dialog.update_layout(margin=dict(l=0,r=0, t=50, b=15))
     return fig, fig_dialog
 
 def graph5(session):
-    #new_df = df.loc[:, ['Fee', 'Level', 'Subject']]
-    query = 'select fee, level, subject from sample.course;'
+    query = f'select * from {keyspace}.top_tech;'
     result = session.execute(query)
-    new_df = pd.DataFrame(list(result))
-    new_df['fee'] = new_df['fee'].apply(convert_to_fee)
-    new_df = new_df.groupby(['subject', 'level'])['fee'].sum().reset_index()
-    fig = px.bar(new_df, x='subject', y='fee', color='level', barmode='stack')
-    fig.update_layout(height=450, width=450, xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
-    fig_dialog = px.bar(new_df, x='subject', y='fee', color='level', barmode='stack')
-    fig_dialog.update_layout(height=1200, width=1100, margin=dict(l=0,r=0, t=50, b=15))
+    df = pd.DataFrame(list(result))
+    df.columns = ['Type', 'Name','Total Courses']
+    df_limited = df.groupby('Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
+    # subjects_to_plot = df_subject_time['Subject'].unique()[10:20]
+    # df_subject_time = df_subject_time.query('Subject in @subjects_to_plot')
+    fig = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height=450, width=350)
+    fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=0, l=0))
+    # fig = px.bar(df, x="Subject", y="Total Courses", color='Subject', height=450, width=350)
+    # fig.update_layout( xaxis={'visible': False}, margin=dict(t=0, l=0))
+
+    fig_dialog = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height=1100, width =1100)
+    fig_dialog.update_layout(margin=dict(l=0,r=0, t=50, b=15))
     return fig, fig_dialog
 
 def graph6(session):
-    query = 'select subject, language from sample.course;'
+    query = f'select subject,programming_language,total_course from {keyspace}.subject_language_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Language', 'Courses']
+    subjects_list = df['Subject'].unique().tolist()
     list_fig = []
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
-        df_data_science = df[df['subject'] == subject]
-        programming_languages = df_data_science['language'].str.split(',').explode().str.strip().tolist()
-        language_counts = pd.Series(programming_languages).value_counts()
-        fig = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
-        fig_dialog = px.pie(language_counts, names=language_counts.index, values=language_counts.values)
-        fig.update_layout(height= 420, width= 420, showlegend=False, margin=dict(t=35, l=0))
+        df_language = df[df['Subject'] == subject]
+        fig = px.pie(df_language, names="Language", values="Courses", height= 420, width= 420)
+        fig.update_layout(showlegend=False, margin=dict(t=35, l=0))
         fig.update_traces(textposition='inside', textinfo='percent')
         list_fig.append(fig)
-        fig_dialog.update_layout(height= 1100, width= 1100, legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+
+        fig_dialog = px.pie(df_language, names="Language", values="Courses", height=1100, width= 1100)
+        fig_dialog.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
         fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
-
         list_fig_dialog.append(fig_dialog)
-    return list_fig ,list_fig_dialog
 
-def graph7():
-    CASSANDRA_IP = '127.0.0.1'
-    cluster = Cluster([CASSANDRA_IP])
-    session = cluster.connect()
-    rows = session.execute("SELECT release_version FROM system.local")
-    for row in rows:
-        print(row.release_version)
+
+    return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
+
+def graph7(session):
+    query = f'select subject,framework,total_course from {keyspace}.subject_framework_course;'
+    result = session.execute(query)
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Framework', 'Courses']
+    subjects_list = df['Subject'].unique().tolist()
+    list_fig = []
+    list_fig_dialog = []
+    for subject in df['Subject'].unique().tolist():
+        df_language = df[df['Subject'] == subject]
+        fig = px.pie(df_language, names="Framework", values="Courses", height= 420, width= 420)
+        fig.update_layout(showlegend=False, margin=dict(t=35, l=0))
+        fig.update_traces(textposition='inside', textinfo='percent')
+        list_fig.append(fig)
+
+        fig_dialog = px.pie(df_language, names="Framework", values="Courses", height=1100, width= 1100)
+        fig_dialog.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        list_fig_dialog.append(fig_dialog)
+
+    return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
+
+def graph8(session):
+    query = f'select subject,tool,total_course from {keyspace}.subject_tool_course;'
+    result = session.execute(query)
+    df = pd.DataFrame(list(result))
+    df.columns = ['Subject', 'Tool', 'Courses']
+    subjects_list = df['Subject'].unique().tolist()
+    list_fig = []
+    list_fig_dialog = []
+    for subject in df['Subject'].unique().tolist():
+        df_language = df[df['Subject'] == subject]
+        fig = px.pie(df_language, names="Tool", values="Courses", height= 420, width= 420)
+        fig.update_layout(showlegend=False, margin=dict(t=35, l=0))
+        fig.update_traces(textposition='inside', textinfo='percent')
+        list_fig.append(fig)
+
+        fig_dialog = px.pie(df_language, names="Tool", values="Courses", height=1100, width= 1100)
+        fig_dialog.update_layout(legend=dict(orientation = "h", yanchor="bottom",y=-1.1,xanchor="left", x=0), margin=dict(l=275, r=275, t=15, b=15))
+        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        list_fig_dialog.append(fig_dialog)
+
+    return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
+
+# def graph7():
+#     CASSANDRA_IP = '127.0.0.1'
+#     cluster = Cluster([CASSANDRA_IP])
+#     session = cluster.connect()
+#     rows = session.execute("SELECT release_version FROM system.local")
+#     for row in rows:
+#         print(row.release_version)
 
 
 
