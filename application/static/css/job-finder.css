@@ -1,10 +1,11 @@
 .job-container {
-    max-width: 300px;
+    max-width: 350px;
     max-height: 430px;
     border-radius: 10px;
     transition: transform 0.3s;
     cursor: pointer;
     overflow: hidden;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   }
   
   .job-title{
@@ -21,10 +22,6 @@
   
   .job-name{
     font-weight: bold;
-  }
-  
-  .job-rating{
-    min-width: max-content
   }
   
   .job-container:hover {
@@ -91,9 +88,25 @@
   }
   
   .select2-selection__choice{
-    gap: 1px;
+    margin: 0px !important;
+    gap: 10px;
+    flex-direction: row-reverse !important;
+    border-radius: 20px !important;
+    background-color: #85eafc !important;
   }
   
   .select2-container--bootstrap-5{
     width: 50vw;
+  }
+  
+  .select2-search{
+  display: none !important;
+  }
+  
+  .select2-container--focus .select2-search{
+    display: block !important;
+  }
+  
+  .select2-selection__rendered{
+    gap: 5px !important
   }
