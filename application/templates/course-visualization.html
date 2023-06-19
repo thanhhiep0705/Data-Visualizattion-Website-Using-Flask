@@ -72,13 +72,19 @@
                       data-bs-dismiss="modal"></button>
             </div>
             <div class="w-50 m-3">
-              <label for="subject-select" class="pb-1">Select Subject</label>
+              <label for="subject-select"
+                     class="pb-1">Select Subject</label>
               <select id="subject-select"
                       aria-label=""
                       class="form-select">
                 {% for index, subject in chart['filter'] %}
                 <option value="{{ index }}"
-                        {% if selectedSubject==index %}selected{% endif %}>{{ subject }}</option>
+                        {%
+                        if
+                        selectedSubject==index
+                        %}selected{%
+                        endif
+                        %}>{{ subject }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -102,51 +108,38 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 <script type="text/javascript">
-  
+
 
   var graphs = {{ graphsData | tojson }};
   var selectedSubject = 0;
-  console.log(graphs)
   for (var i = 0; i < graphs.length; i++) {
     var graph = graphs[i];
-    if(graph.haveFilter == false){
-      var graphData = JSON.parse(graph.graphData);
-      console.log(graphData, typeof graphData)
-      var graphDialogData = JSON.parse(graph.graphDialogData);
+    var graphData = JSON.parse(graph.graphData);
+    var graphDialogData = JSON.parse(graph.graphDialogData);
 
+    if (graph.haveFilter == false) {
       Plotly.plot(graph.chartId, graphData, {});
       Plotly.plot(graph.dialogId, graphDialogData, {});
-
     }
-    else{
-      var graphData1 =  JSON.parse(graph.graphData);
-      var graphDialogData1 = JSON.parse(graph.graphDialogData);
-      
-      Plotly.plot(graph.chartId, graphData1[selectedSubject], {});
-      Plotly.plot(graph.dialogId, graphDialogData1[selectedSubject], {});
+    else {
+      Plotly.plot(graph.chartId, graphData[selectedSubject], {});
+      Plotly.plot(graph.dialogId, graphDialogData[selectedSubject], {});
     }
-    
   }
 
-  
+  function handleSubjectChange() {
+    selectedSubject = parseInt($('#subject-select').val());
+    console.log(selectedSubject);
 
-  // var graphs6 = {{ graph6JSON | safe }};
-  // var graph6Dialog = {{ graph6_dialogJSON | safe }};
-  // Plotly.plot('chart6', graphs6[selectedSubject], {});
-  // Plotly.plot('dialog-chart6', graph6Dialog[selectedSubject], {});
+    // Update the plots with the new subject
+    // Plotly.react('chart6', graphs6[selectedSubject], {});
+    // Plotly.react('dialog-chart6', graph6Dialog[selectedSubject], {});
+  }
 
-  // function handleSubjectChange() {
-  //   selectedSubject = parseInt($('#subject-select').val());
-
-  //   // Update the plots with the new subject
-  //   Plotly.react('chart6', graphs6[selectedSubject], {});
-  //   Plotly.react('dialog-chart6', graph6Dialog[selectedSubject], {});
-  // }
-
-  // // Event listener for subject dropdown change
-  // $(document).ready(function () {
-  //   $('#subject-select').change(handleSubjectChange);
-  // });
+  // Event listener for subject dropdown change
+  $(document).ready(function () {
+    $('#subject-select').change(handleSubjectChange);
+  });
 
 </script>
 

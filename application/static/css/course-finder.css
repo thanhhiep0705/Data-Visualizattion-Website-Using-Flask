@@ -25,7 +25,7 @@
 }
 
 .course-rating{
-  min-width: max-content
+  min-width: max-content;
 }
 
 .course-container:hover {

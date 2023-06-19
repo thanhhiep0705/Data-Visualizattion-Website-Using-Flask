@@ -11,6 +11,7 @@
   box-shadow: 0 4px 4px rgba(31, 31, 31, 0.1);
   padding: 15px 10px;
   width: fit-content;
+  min-width: 400px;
   max-width: 500px;
 }
 
@@ -18,14 +19,9 @@
   width: 80%;
 }
 
-.statistics-list {
-  display: flex;
-  gap: 3rem;
-  margin-top: 20px;
-}
-
 .statistic-item {
-  flex-basis: 25%;
+  flex-basis: 20%;
+  min-width: 250px;
   text-align: center;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

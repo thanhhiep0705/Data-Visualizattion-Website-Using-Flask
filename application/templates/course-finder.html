@@ -17,7 +17,7 @@
                 data-placeholder="Chose your filter"
                 name="selected_options"
                 multiple>
-            {% for group in filter_datas %}
+            {% for group in filter_data %}
             <optgroup label="{{group['name']}}">
                 {% for value in group['value'] %}
                 <option value="{{group['name']}}: {{value}}">{{value}}</option>
@@ -39,25 +39,25 @@
 
     </form>
 
-    {% if course|length > 0 %}
+    {% if courses|length > 0 %}
     <div class="mt-4">
         <h2 class="text-danger">FILTERED COURSE</h2>
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
-            {% for index,row in course.iterrows() %}
+            {% for index,row in courses.iterrows() %}
             <div class="course-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
                      class="course-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
                     <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['rating'] }}</p>
+                        <p class="fw-bold m-0">{{ row['rating']|round(1) }}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
                 <div class="course-info p-2">
-                    {% for column in ['subject','enroll', 'fee', 'language', 'organization','level'] %}
+                    {% for column in ['subject','enroll', 'fee', 'programming_language', 'framework','level'] %}
                     <div class="d-flex justify-content-between gap-2">
                         <span class="fw-bold text-capitalize">{{column}}:</span>
                         <p class="text-end text-capitalize">{{ row[column] }}</p>
@@ -81,14 +81,14 @@
                      class="course-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
                     <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['rating'] }}</p>
+                        <p class="fw-bold m-0">{{ row['rating']|round(1) }}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
                 <div class="course-info p-2">
-                    {% for column in ['subject','enroll', 'fee', 'language', 'organization','level'] %}
+                    {% for column in ['subject','enroll', 'fee', 'programming_language', 'framework','level'] %}
                     <div class="d-flex justify-content-between gap-1">
                         <span class="fw-bold text-capitalize">{{column}}:</span>
                         <p class="text-end text-capitalize">{{ row[column] }}</p>
