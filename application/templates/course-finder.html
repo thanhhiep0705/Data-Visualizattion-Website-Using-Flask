@@ -39,9 +39,12 @@
 
     </form>
 
-    {% if courses|length > 0 %}
+    {% if selected_options|length > 0 %}
     <div class="mt-4">
-        <h2 class="text-danger">FILTERED COURSE</h2>
+        <h2 class="text-danger">FILTERED COURSES ({{courses|length}})</h2>
+        {% if courses|length == 0 %}
+        <h4 class="text-center my-3 fw-bold">No Data Found</h4>
+        {% endif %}
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in courses.iterrows() %}
             <div class="course-container p-0 col border border-1 border-info"
@@ -70,7 +73,7 @@
     </div>
     {% endif %}
 
-    <div class="w-75 border border-1 border-info rounded-1 my-4"></div>
+    <div class="w-75 border border-1 border-info rounded-1 my-4 mx-auto"></div>
     <div class="mt-4">
         <h2 class="text-danger ">TOP COURSE</h2>
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">

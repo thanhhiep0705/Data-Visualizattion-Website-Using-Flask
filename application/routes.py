@@ -609,7 +609,7 @@ def jobVisualization():
             'haveFilter': True,
             'filter': listSubjects5
         },
-                {
+        {
             'name':'Top In-Demand Technologies',
             'chartId':'chart6',
             'dialogId': 'dialog-chart6',

@@ -23,8 +23,7 @@
 
       <div class="modal"
            id="myModal{{chart['chartId']}}">
-        <div class="modal-dialog"
-             style="max-width: 1200px">
+        <div class="modal-dialog">
           <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header w-100 bg-light p-4">
@@ -62,8 +61,7 @@
 
       <div class="modal"
            id="myModal{{chart['chartId']}}">
-        <div class="modal-dialog"
-             style="max-width: 1200px">
+        <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header w-100 bg-light p-4">
               <h3 class="modal-title text-primary fw-bold">{{chart['name']}}</h3>
@@ -72,19 +70,13 @@
                       data-bs-dismiss="modal"></button>
             </div>
             <div class="w-50 m-3">
-              <label for="subject-select"
+              <label for="industry-select-{{ loop.index }}"
                      class="pb-1">Select Industry</label>
-              <select id="subject-select"
+              <select id="industry-select-{{ loop.index }}"
                       aria-label=""
                       class="form-select">
-                {% for index, subject in chart['filter'] %}
-                <option value="{{ index }}"
-                        {%
-                        if
-                        selectedSubject==index
-                        %}selected{%
-                        endif
-                        %}>{{ subject }}</option>
+                {% for index, industry in chart['filter'] %}
+                <option value="{{ index }}">{{ industry }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -111,7 +103,7 @@
 
 
   var graphs = {{ graphsData | tojson }};
-  var selectedSubject = 0;
+  var selectedIndustry = [0,0,0,0,0,0];
   for (var i = 0; i < graphs.length; i++) {
     var graph = graphs[i];
     var graphData = JSON.parse(graph.graphData);
@@ -122,23 +114,25 @@
       Plotly.plot(graph.dialogId, graphDialogData, {});
     }
     else {
-      Plotly.plot(graph.chartId, graphData[selectedSubject], {});
-      Plotly.plot(graph.dialogId, graphDialogData[selectedSubject], {});
+      Plotly.plot(graph.chartId, graphData[selectedIndustry[i]], {});
+      Plotly.plot(graph.dialogId, graphDialogData[selectedIndustry[i]], {});
     }
   }
 
-  function handleSubjectChange() {
-    selectedSubject = parseInt($('#subject-select').val());
-    console.log(selectedSubject);
-
-    // Update the plots with the new subject
-    // Plotly.react('chart6', graphs6[selectedSubject], {});
-    // Plotly.react('dialog-chart6', graph6Dialog[selectedSubject], {});
-  }
-
-  // Event listener for subject dropdown change
-  $(document).ready(function () {
-    $('#subject-select').change(handleSubjectChange);
+  $('#industry-select-3').change(function () {
+    selectedIndustry[2] = $(this).val();
+    Plotly.react('chart3', JSON.parse(graphs[2].graphData)[selectedIndustry[2]], {});
+    Plotly.react('dialog-chart3', JSON.parse(graphs[2].graphDialogData)[selectedIndustry[2]], {});
+  });
+  $('#industry-select-4').change(function () { 
+    selectedIndustry[3] = $(this).val();
+    Plotly.react('chart4', JSON.parse(graphs[3].graphData)[selectedIndustry[3]], {});
+    Plotly.react('dialog-chart4', JSON.parse(graphs[3].graphDialogData)[selectedIndustry[3]], {});
+  });
+  $('#industry-select-5').change(function () {
+    selectedIndustry[4] = $(this).val();
+    Plotly.react('chart5', JSON.parse(graphs[4].graphData)[selectedIndustry[4]], {});
+    Plotly.react('dialog-chart5', JSON.parse(graphs[4].graphDialogData)[selectedIndustry[4]], {});
   });
 
 </script>
