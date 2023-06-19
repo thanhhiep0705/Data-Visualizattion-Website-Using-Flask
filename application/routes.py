@@ -26,7 +26,6 @@ cloud_config= {
 }
 auth_provider = PlainTextAuthProvider(clientId, clientSecret)
 cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-session = cluster.connect()
 
 @app.route('/')
 def index():
@@ -377,6 +376,7 @@ def about():
 
 @app.route('/course-finder', methods=['GET', 'POST'])
 def courseFinder():
+    session = cluster.connect()
     selected_options = request.form.getlist('selected_options')
 
     query = f'select name, subject, enroll, programming_language, fee, framework, level, rating, link from {course_keyspace}.course_search;'
@@ -397,6 +397,7 @@ def courseFinder():
 
 @app.route('/job-finder')
 def jobSearch():
+    session = cluster.connect()
     selected_options = request.form.getlist('selected_options')
 
     query = f'select title, industry, enroll, programming_language, min_salary, max_salary, framework, link from {job_keyspace}.job_search;'
@@ -417,7 +418,7 @@ def jobSearch():
 
 @app.route('/course-visualization')
 def courseVisualization():
-    
+    session = cluster.connect()
     fig1, fig1_dialog = course_graph1(session)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
@@ -532,6 +533,7 @@ def courseVisualization():
 
 @app.route('/job-visualization')
 def jobVisualization():
+    session = cluster.connect()
     fig1, fig1_dialog = job_graph1(session)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
