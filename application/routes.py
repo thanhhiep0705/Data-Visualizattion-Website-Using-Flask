@@ -295,7 +295,7 @@ def about():
                 },
                 {
                     'title': 'Chuyên ngành',
-                    'value': 'Khoa học dữ liệu'
+                    'value': 'Khoa học máy tính'
                 },
                 {
                     'title': 'Email',
@@ -432,7 +432,7 @@ def courseVisualization():
 
     graphsData = [
         {
-            'name':'Total Enrollments by Subject',
+            'name':'Biểu đồ thống kê số lượng học viên theo lĩnh vực',
             'chartId':'chart1',
             'dialogId': 'dialog-chart1',
             'graphData': graph1JSON,
@@ -441,7 +441,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Total Number of Courses by Subject',
+            'name':'Biểu đồ thống kê số lượng khóa học theo lĩnh vực',
             'chartId':'chart2',
             'dialogId': 'dialog-chart2',
             'graphData': graph2JSON,
@@ -450,7 +450,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Average Time by Subject',
+            'name':'Biểu đồ thời gian học trung bình theo lĩnh vực và cấp độ',
             'chartId':'chart3',
             'dialogId': 'dialog-chart3',
             'graphData': graph3JSON,
@@ -459,7 +459,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Average Course Duration by Subject and Level',
+            'name':'Biểu đồ học phí trung bình theo lĩnh vực và cấp độ',
             'chartId':'chart4',
             'dialogId': 'dialog-chart4',
             'graphData': graph4JSON,
@@ -468,7 +468,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Top Technologies Being Taught',
+            'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
             'chartId':'chart5',
             'dialogId': 'dialog-chart5',
             'graphData': graph5JSON,
@@ -477,7 +477,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Proportion of Programming Languages by Subject',
+            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo ngành',
             'chartId':'chart6',
             'dialogId': 'dialog-chart6',
             'graphData': graph6JSON,
@@ -486,7 +486,7 @@ def courseVisualization():
             'filter': listSubjects6
         },
         {
-            'name':'Proportion Frameworks of Programming Languages by Subject',
+            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo ngành',
             'chartId':'chart7',
             'dialogId': 'dialog-chart7',
             'graphData': graph7JSON,
@@ -495,7 +495,7 @@ def courseVisualization():
             'filter': listSubjects7
         },
         {
-            'name':'Proportion of Tools by Subject',
+            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo ngành',
             'chartId':'chart8',
             'dialogId': 'dialog-chart8',
             'graphData': graph8JSON,
@@ -539,7 +539,7 @@ def jobVisualization():
 
     graphsData = [
         {
-            'name':'Number of Job Postings by Industry',
+            'name':'Biểu đồ thống kê mức độ phổ biến của các ngành',
             'chartId':'chart1',
             'dialogId': 'dialog-chart1',
             'graphData': graph1JSON,
@@ -548,7 +548,7 @@ def jobVisualization():
             'filter': []
         },
         {
-            'name':'Salary Range by Industry',
+            'name':'Biểu đồ phân bố mức lương theo ngành',
             'chartId':'chart2',
             'dialogId': 'dialog-chart2',
             'graphData': graph2JSON,
@@ -558,7 +558,7 @@ def jobVisualization():
         },
 
         {
-            'name':'Proportion of Programming Languages by Industry',
+            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo ngành',
             'chartId':'chart3',
             'dialogId': 'dialog-chart3',
             'graphData': graph3JSON,
@@ -567,7 +567,7 @@ def jobVisualization():
             'filter': listSubjects3
         },
         {
-            'name':'Proportion of Frameworks by Industry',
+            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo ngành',
             'chartId':'chart4',
             'dialogId': 'dialog-chart4',
             'graphData': graph4JSON,
@@ -576,7 +576,7 @@ def jobVisualization():
             'filter': listSubjects4
         },
         {
-            'name':'Proportion of Tools by Industry',
+            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo ngành',
             'chartId':'chart5',
             'dialogId': 'dialog-chart5',
             'graphData': graph5JSON,
@@ -585,7 +585,7 @@ def jobVisualization():
             'filter': listSubjects5
         },
         {
-            'name':'Top In-Demand Technologies',
+            'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
             'chartId':'chart6',
             'dialogId': 'dialog-chart6',
             'graphData': graph6JSON,
@@ -762,7 +762,7 @@ def course_graph1(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Enroll']
-    fig = px.pie(df, names="Subject", values="Total Enroll", height= 420, width= 420)
+    fig = px.pie(df.head(10), names="Subject", values="Total Enroll", height= 420, width= 420)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='percent+label')
     
@@ -775,7 +775,7 @@ def course_graph2(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
-    fig = px.pie(df, names="Subject", values="Total Courses",height= 420, width= 420)
+    fig = px.pie(df.head(10), names="Subject", values="Total Courses",height= 420, width= 420)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='percent+label')
 
@@ -788,9 +788,9 @@ def course_graph3(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Time']
-    fig = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=410, width=375)
+    fig = px.bar(df.head(10), x='Subject', y='Time', color='Level', barmode='stack', height=410, width=375)
     fig.update_layout( xaxis_title="Subject-Title", margin=dict(t=5, l=0))
-    fig.update_traces(text=["{}-{}".format(x, color) for x, color in zip(df['Subject'], df['Level'])], textposition='inside')
+    fig.update_traces(texttemplate='%{x}%{y}', textposition='inside')
 
     fig_dialog = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=650, width=1000)
     
@@ -801,7 +801,7 @@ def course_graph4(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Fee']
-    fig = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=410, width=375)
+    fig = px.bar(df.head(10), x='Subject', y='Fee', color='Level', barmode='stack', height=410, width=375)
     fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
     fig_dialog = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=650, width=1100)
     return fig, fig_dialog
@@ -828,7 +828,7 @@ def course_graph6(session):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language, names="Language", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Language", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
@@ -850,7 +850,7 @@ def course_graph7(session):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language, names="Framework", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Framework", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
@@ -871,7 +871,7 @@ def course_graph8(session):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language, names="Tool", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Tool", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
@@ -888,7 +888,7 @@ def job_graph1(session):
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Total Postings']
 
-    fig = px.pie(df, names="Industry", values="Total Postings",height= 420, width= 420)
+    fig = px.pie(df.head(10), names="Industry", values="Total Postings",height= 420, width= 420)
     fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='percent+label')
 
@@ -901,7 +901,7 @@ def job_graph2(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
-    fig = px.bar(df, x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375)
+    fig = px.bar(df.head(10), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375)
     fig.update_layout(
         xaxis={'visible': False, 'showticklabels': True},
         showlegend=False, margin=dict(t=5, l=0)
@@ -925,7 +925,7 @@ def job_graph3(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language, names="Programming Language", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Programming Language", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
@@ -946,7 +946,7 @@ def job_graph4(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language, names="Framework", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Framework", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
@@ -967,7 +967,7 @@ def job_graph5(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language, names="Tool", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Tool", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)

@@ -11,8 +11,8 @@
   box-shadow: 0 4px 4px rgba(31, 31, 31, 0.1);
   padding: 15px 10px;
   width: fit-content;
-  min-width: 400px;
-  max-width: 500px;
+  min-width: 450px;
+  max-width: 550px;
 }
 
 .btn {
