@@ -18,16 +18,16 @@
   <link rel="stylesheet"
         href="{{url_for('static', filename = 'main.css')}}"
         type="text/css" />
-  <title>Visualization Website</title>
+  <title>Data Insights Explorer</title>
 </head>
 
 <body>
   <nav id="navbar"
        class="navbar navbar-expand-lg navbar-light bg-light"
        style="background-color: #e3f2fd">
-    <div class="container-fluid gap-3 px-3">
+    <div class="container-fluid gap-2 px-3">
       <a class="navbar-brand"
-         href="/">Home</a>
+         href="/">Trang chủ</a>
       <button class="navbar-toggler"
               type="button"
               data-bs-toggle="collapse"
@@ -42,36 +42,32 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-3">
           <li class="nav-item">
             <a class="nav-link"
-               href="/data">Data</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"
-               href="/about">About</a>
+               href="/data">Dữ liệu</a>
           </li>
 
           <li id="navbar-dropdown-2" class="nav-item dropdown">
             <a class="dropdown-toggle nav-link" role="button" id="dropdown-link-2" data-bs-toggle="dropdown" aria-expanded="false">
-              Data Visualizations
+              Trực quan hóa dữ liệu
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdown-link-2">
-              <li><a class="dropdown-item dropdown-link" href="/course-visualization">Course Data</a></li>
-              <li><a class="dropdown-item dropdown-link" href="/job-visualization">Job Posting Data</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/course-visualization">Dữ liệu khóa học</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/job-visualization">Dữ liệu tuyển dụng</a></li>
             </ul>
           </li>
 
           <li id="navbar-dropdown-1" class="nav-item dropdown">
             <a class="dropdown-toggle nav-link" role="button" id="dropdown-link-1" data-bs-toggle="dropdown" aria-expanded="false">
-              Search Functionality
+              Tìm kiếm
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdown-link-1">
-              <li><a class="dropdown-item dropdown-link" href="/course-finder">Course Finder</a></li>
-              <li><a class="dropdown-item dropdown-link" href="/job-finder">Job Finder</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/course-finder">Tìm khóa học</a></li>
+              <li><a class="dropdown-item dropdown-link" href="/job-finder">Tìm việc làm</a></li>
             </ul>
           </li>
 
           <li class="nav-item">
             <a class="nav-link"
-               href="/manage-crawler">Manage Crawler</a>
+               href="/about">Giới thiệu</a>
           </li>
         </ul>
       </div>

@@ -1,13 +1,5 @@
 @font-face {
-  font-family: "lobsterregular";
-  src: url("./fonts/lobster-regular-webfont.woff2") format("woff2"),
-    url("./fonts/lobster-regular-webfont.woff") format("woff");
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "work_sansregular";
+  font-family: "Roboto";
   src: url("./fonts/worksans-variablefont_wght-webfont.woff2") format("woff2"),
     url("./fonts/worksans-variablefont_wght-webfont.woff") format("woff");
   font-weight: normal;
@@ -30,11 +22,14 @@
 
 .navbar-brand {
   color: rgb(250, 250, 250);
-  font-family: lobsterregular;
   font-size: 2.5rem;
+  margin-bottom: 5px;
+  margin-right: 40px;
 }
 
 .nav-link{
+  padding: 0px;
+  font-size: 18px;
   font-weight: bold;
 }
 

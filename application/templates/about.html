@@ -3,46 +3,66 @@
 <div class="d-flex flex-column">
   <div class="p-4">
     <div class="d-flex gap-3 align-items-center mb-3">
-      <img src="../static/img/idea.png" height="32" alt="Member Avatar" />
-      <h2>INTRODUCTION</h2>
+      <img src="../static/img/idea.png"
+           height="32"
+           alt="Member Avatar" />
+      <h2>Giới thiệu</h2>
     </div>
     <p>
-      Welcome to our group's graduation project! Our team is thrilled to present our graduation project, which focuses on building a data pipeline to ingest data related to courses and recruitment into a data lake. Then, apply data processing techniques to generate useful basic reports and data analysis for businesses as well as individuals in need of job search. The ultimate goal of this project is to enhance data management efficiency and provide valuable insights to optimize the current training and recruitment processes. Join us in exploring and implementing this data pipeline to make a meaningful impact
+
+      Chào mừng bạn đến với trang web của chúng tôi! Chúng tôi giới thiệu một nền tảng trực tuyến, tập
+      trung vào việc trực quan hóa và tìm kiếm khóa học và việc làm trong lĩnh vực Công nghệ thông tin (IT).
+
+      Với sự kết hợp giữa dữ liệu thu thập từ các nguồn đáng tin cậy và khả năng trực quan hóa, trang web của chúng tôi
+      cung cấp cho bạn một trải nghiệm tuyệt vời khi khám phá và tìm hiểu về lĩnh vực IT.
+
+      Bạn có thể dễ dàng tìm kiếm và duyệt qua hàng ngàn khóa học về lập trình, mạng, trí tuệ nhân tạo và nhiều lĩnh vực
+      công nghệ thông tin khác. Chúng tôi cung cấp thông tin chi tiết về nội dung khóa học, đánh giá, độ khó và cả yêu
+      cầu kỹ năng. Điều này giúp bạn lựa chọn những khóa học phù hợp với mục tiêu và sự phát triển cá nhân của bạn.
+
+      Ngoài ra, chúng tôi cũng cung cấp thông tin về các vị trí việc làm trong lĩnh vực IT từ các công ty hàng đầu. Bạn
+      có thể khám phá thông tin về các vị trí, yêu cầu kỹ năng, mức lương và địa điểm làm việc. Điều này giúp bạn có cái
+      nhìn tổng quan về thị trường việc làm IT và chuẩn bị tốt hơn cho sự nghiệp của mình.
+
+      Hãy khám phá và tận hưởng trải nghiệm đầy hứa hẹn trên trang web của chúng tôi. Chúng tôi tin rằng chúng sẽ giúp
+      bạn đạt được những mục tiêu và ước mơ trong sự nghiệp công nghệ thông tin của bạn.
     </p>
   </div>
   <div class="p-4 bg-light">
     <div class="d-flex gap-3 align-items-center mb-3">
-      <img src="../static/img/slogan.png" height="32" alt="Member Avatar" />
-      <h2>SLOGAN</h2>
+      <img src="../static/img/slogan.png"
+           height="32"
+           alt="Member Avatar" />
+      <h2>Slogan</h2>
     </div>
     <p>
-      Unleashing Data's Potential for a Smarter Future
+      Phát huy tiềm năng của dữ liệu cho một tương lai thông minh hơn
     </p>
   </div>
 
   <div class="p-4">
     <div class="d-flex gap-3 align-items-center mb-3">
-      <img src="../static/img/teamwork.png" height="32" alt="Member Avatar" />
-      <h2>MEMBERS</h2>
+      <img src="../static/img/teamwork.png"
+           height="32"
+           alt="Member Avatar" />
+      <h2>Thành viên</h2>
     </div>
 
     <div class="row row-cols-auto justify-content-center gap-4 mx-auto">
       {% for member in team_members %}
-      <div class="item-member col text-center d-flex flex-column gap-1 px-3 py-4">
+      <div class="item-member col text-center d-flex flex-column gap-3 px-3 py-4">
         <div class="avatar text-center">
-          <img
-            src="{{ member['image'] }}"
-            width="100"
-            height="100"
-            alt="Member Avatar"
-          />
+          <img src="{{ member['image'] }}"
+               width="100"
+               height="100"
+               alt="Member Avatar" />
         </div>
-        <div class="name">{{ member['name'] }}</div>
+        <div class="name fw-bold">{{ member['name'] }}</div>
         <div class="role">{{member['role']}}</div>
-        <div class="information">
+        <div class="information d-flex flex-column gap-2">
           {% for field in member['information'] %}
           <div class="d-flex justify-content-between">
-            <span>{{ field['title'] }} :</span>
+            <span class="fw-bold">{{ field['title'] }} :</span>
             <span>{{ field['value'] }}</span>
           </div>
           {% endfor %}
@@ -53,8 +73,6 @@
   </div>
 </div>
 {% block css %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/about.css') }}"
-/>
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/about.css') }}" />
 {% endblock %} {% endblock %}

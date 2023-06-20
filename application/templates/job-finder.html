@@ -14,7 +14,7 @@
           method="POST">
         <select class="form-select"
                 id="multiple-select-optgroup-field"
-                data-placeholder="Chose your filter"
+                data-placeholder="Hãy chọn bộ lọc"
                 name="selected_options"
                 multiple>
             {% for group in filter_data %}
@@ -34,16 +34,16 @@
         </button>
 
         <button type="submit"
-                class="input-group-text btn-primary px-4">Submit
+                class="input-group-text btn-primary px-4">Tìm kiếm
         </button>
 
     </form>
 
     {% if selected_options|length > 0 %}
     <div class="mt-4">
-        <h2 class="text-danger">FILTERED JOB POSTINGS ({{jobs|length}})</h2>
+        <h2 class="text-danger">Các tin tuyển dụng phù hợp ({{jobs|length}})</h2>
         {% if jobs|length == 0 %}
-        <h4 class="text-center my-3 fw-bold">No Data Found</h4>
+        <h4 class="text-center my-3 fw-bold">Không tìm thấy dữ liệu</h4>
         {% endif %}
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in jobs.iterrows() %}
@@ -68,7 +68,7 @@
 
     <div class="w-75 border border-1 border-info rounded-1 my-4 mx-auto"></div>
     <div class="mt-4">
-        <h2 class="text-danger ">TOP JOB POSTINGS</h2>
+        <h2 class="text-danger ">Các tin tuyển dụng nổi bật</h2>
         <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in top_job.iterrows() %}
             <div class="job-container p-0 col border border-1 border-info"

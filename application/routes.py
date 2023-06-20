@@ -1,6 +1,3 @@
-import os
-import re
-from tkinter import Widget
 from application import app
 from flask import render_template, request
 import pandas as pd
@@ -8,11 +5,8 @@ import json
 import plotly
 import plotly.express as px
 import plotly.graph_objects as go
-import plotly.io as pio
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
-import logging
-import numpy as np
 
 app.config['ACTIVE_TAB'] = '/'
 bundlepath = 'application/secure-connect-course-data.zip'
@@ -31,68 +25,25 @@ cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
 def index():
     return render_template('home.html')
 
-@app.route('/manage-crawler')
-def test():
-# Dữ liệu mẫu
-    x_data = [1, 2, 3, 4, 5]
-    y_data = [10, 15, 7, 12, 8]
-    
-
-    # Tạo biểu đồ
-    fig = go.Figure(data=go.Scatter(x=x_data, y=y_data, mode='lines'))
-
-    # Tạo bộ lọc
-    dropdown_filter = go.layout.Updatemenu(
-        buttons=list([
-            dict(label='Tất cả',
-                method='update',
-                args=[{'visible': [True]},
-                    {'title': 'Tất cả'}]),
-            dict(label='Dữ liệu 1',
-                method='update',
-                args=[{'visible': [True, False, False, False, False]},
-                    {'title': 'Dữ liệu 1'}]),
-            dict(label='Dữ liệu 2',
-                method='update',
-                args=[{'visible': [False, True, False, False, False]},
-                    {'title': 'Dữ liệu 2'}])
-        ]),
-        direction='down',
-        showactive=True
-    )
-
-    # Cập nhật layout của biểu đồ
-    fig.update_layout(
-        title='Biểu đồ với bộ lọc',
-        updatemenus=[dropdown_filter],
-        autosize=False,
-        width=500,
-        height=500
-    )
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-    # Hiển thị biểu đồ
-    return render_template('manage-crawler.html', graphJSON = graphJSON)
-
 @app.route('/data')
 def data():
     source_data = [
         {
-            'title' : 'Job Postings Data',
+            'title' : 'Nguồn dữ liệu tuyển dụng',
             'data' : [
                 {
                     'title': 'LinkedIn',
                     'information':[
                         {
-                            'title': 'Members',
+                            'title': 'Người dùng',
                             'value': '740+ M'
                         },
                         {
-                            'title': 'Companies',
-                            'value': '50+ M'
+                            'title': 'Công ty',
+                            'value': '50+ triệu'
                         },
                         {
-                            'title': 'Languages',
+                            'title': 'Ngôn ngữ',
                             'value': '24'
                         }
                     ],
@@ -102,15 +53,15 @@ def data():
                     'title': 'NodeFlair',
                     'information':[
                         {
-                            'title': 'Members',
+                            'title': 'Người dùng',
                             'value': '4,000+'
                         },
                         {
-                            'title': 'Companies',
+                            'title': 'Công ty',
                             'value': '5,000+'
                         },
                         {
-                            'title': 'Partners',
+                            'title': 'Đối tác',
                             'value': '200+'
                         }
                     ],
@@ -120,22 +71,22 @@ def data():
         },
 
         {
-            'title' : 'Courses Data',
+            'title' : 'Nguồn dữ liệu khóa học',
         
             'data' : [
                 {
                     'title': 'Coursera',
                     'information':[
                         {
-                            'title': 'Courses',
+                            'title': 'Khóa học',
                             'value': '4,000+'
                         },
                         {
-                            'title': 'Learners',
-                            'value': '82+ M'
+                            'title': 'Người dùng',
+                            'value': '82+ triệu'
                         },
                         {
-                            'title': 'Partners',
+                            'title': 'Đối tác',
                             'value': '200+'
                         }
                     ],
@@ -145,15 +96,15 @@ def data():
                     'title': 'Udemy',
                     'information':[
                         {
-                            'title': 'Courses',
-                            'value': '130,000+'
+                            'title': 'Khóa học',
+                            'value': '65,000+'
                         },
                         {
-                            'title': 'Learners',
-                            'value': '40+ M'
+                            'title': 'Người dùng',
+                            'value': '20+ triệu'
                         },
                         {
-                            'title': 'Countries',
+                            'title': 'Quốc gia',
                             'value': '190+'
                         }
                     ],
@@ -163,15 +114,15 @@ def data():
                     'title': 'edX',
                     'information':[
                         {
-                            'title': 'Courses',
+                            'title': 'Khóa học',
                             'value': '3,000+'
                         },
                         {
-                            'title': 'Learners',
-                            'value': '38+ M'
+                            'title': 'Người dùng',
+                            'value': '38+ triệu'
                         },
                         {
-                            'title': 'Partners',
+                            'title': 'Đối tác',
                             'value': '120+'
                         }
                     ],
@@ -186,188 +137,212 @@ def data():
 def about():
     team_members = [
         {
-            'name': 'Nguyen Tran Minh Thu',
-            'role': 'Instructor',
+            'name': 'Nguyễn Trần Minh Thư',
+            'role': 'Giáo viên hướng dẫn',
             'image': '../static/img/businesswoman.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'Degree',
-                    'value': 'Doctor'
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
                 },
                 {
-                    'title': 'Job',
-                    'value': 'Lecturers'
+                    'title': 'Học vị',
+                    'value': 'Tiến sĩ'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Information System'
+                    'title': 'Nghề nghiệp',
+                    'value': 'Giảng viên'
+                },
+                {
+                    'title': 'Chuyên ngành',
+                    'value': 'Hệ thống thông tin'
                 },
                 {
                     'title': 'Email',
                     'value': 'ntmthu@fit.hcmus.edu.vn'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Reading, Cooking'
+                    'title': 'Sở thích',
+                    'value': 'Đọc sách, Nấu ăn'
                 }
             ]
         },
         {
-            'name': 'Nguyen Pham Quang Dung',
-            'role': 'Team Leader',
+            'name': 'Nguyễn Phạm Quang Dũng',
+            'role': 'Trưởng nhóm',
             'image': '../static/img/man.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'StudentID',
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
+                },
+                {
+                    'title': 'MSSV',
                     'value': '19120485'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Data Science'
+                    'title': 'Chuyên ngành',
+                    'value': 'Khoa học dữ liệu'
                 },
                 {
                     'title': 'Email',
                     'value': 'npqdung17@gmail.com'
                 },
                 {
-                    'title': 'Future Job',
+                    'title': 'Định hướng',
                     'value': 'Data Engineer'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Hiking, Cooking'
+                    'title': 'Sở thích',
+                    'value': 'Thể thao, Nấu ăn'
                 }
             ]
         },
         {
-            'name': 'Duong Thanh Hiep',
-            'role': 'Team Member',
+            'name': 'Dương Thanh Hiệp',
+            'role': 'Thành viên',
             'image': '../static/img/hacker.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'StudentID',
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
+                },
+                {
+                    'title': 'MSSV',
                     'value': '19120505'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Computer Science'
+                    'title': 'Chuyên ngành',
+                    'value': 'Khoa học máy tính'
                 },
                 {
                     'title': 'Email',
-                    'value': 'hiep0705@gmail.com'
+                    'value': 'thanhhiep0705@gmail.com'
                 },
                 {
-                    'title': 'Future Job',
+                    'title': 'Định hướng',
                     'value': 'Web Developer'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Traveling, Football'
+                    'title': 'Sở thích',
+                    'value': 'Du lịch, Thể thao'
                 }
             ]
         },
         {
-            'name': 'Nguyen Thi Tieu Mi',
-            'role': 'Team Member',
+            'name': 'Nguyễn Thị Tiểu Mi',
+            'role': 'Thành viên',
             'image': '../static/img/woman.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'StudentID',
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
+                },
+                {
+                    'title': 'MSSV',
                     'value': '19120577'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Information System'
+                    'title': 'Chuyên ngành',
+                    'value': 'Hệ thống thông tin'
                 },
                 {
                     'title': 'Email',
                     'value': 'tieumi2509@gmail.com'
                 },
                 {
-                    'title': 'Future Job',
+                    'title': 'Định hướng',
                     'value': 'Web Developer'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Reading, Cooking'
+                    'title': 'Sở thích',
+                    'value': 'Đọc sách, Nấu ăn'
                 }
             ]
         },
         {
-            'name': 'Le Thanh Loc',
-            'role': 'Team Member',
+            'name': 'Lê Thành Lộc',
+            'role': 'Thành viên',
             'image': '../static/img/businessman.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'StudentID',
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
+                },
+                {
+                    'title': 'MSSV',
                     'value': '19120562'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Information System'
+                    'title': 'Chuyên ngành',
+                    'value': 'Khoa học dữ liệu'
                 },
                 {
                     'title': 'Email',
                     'value': 'lochcmus@gmail.com'
                 },
                 {
-                    'title': 'Future Job',
+                    'title': 'Định hướng',
                     'value': 'Data Engineer'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Singing, Traveling'
+                    'title': 'Sở thích',
+                    'value': 'Hát, Du lịch'
                 }
             ]
         },
         {
-            'name': 'Nguyen Thi Kim Ngan',
-            'role': 'Team Member',
+            'name': 'Nguyễn Thị Kim Ngân',
+            'role': 'Thành viên',
             'image': '../static/img/girl.png',
             'information':[
                 {
-                    'title': 'University',
-                    'value': 'University of Science'
+                    'title': 'Trường',
+                    'value': 'Đại học KHTN, ĐHQG-HCM'
                 },
                 {
-                    'title': 'StudentID',
+                    'title': 'Khoa',
+                    'value': 'Công nghệ thông tin'
+                },
+                {
+                    'title': 'MSSV',
                     'value': '19120598'
                 },
                 {
-                    'title': 'Major',
-                    'value': 'Information System'
+                    'title': 'Chuyên ngành',
+                    'value': 'Hệ thống thông tin'
                 },
                 {
                     'title': 'Email',
                     'value': 'ntkn.mnkt@gmail.com'
                 },
                 {
-                    'title': 'Future Job',
+                    'title': 'Định hướng',
                     'value': 'Web Developer'
                 },
                 {
-                    'title': 'Hobbies',
-                    'value': 'Reading, Hiking'
+                    'title': 'Sở thích',
+                    'value': 'Đọc sách, Thể thao'
                 }
             ]
         }
@@ -788,11 +763,11 @@ def course_graph1(session):
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Enroll']
     fig = px.pie(df, names="Subject", values="Total Enroll", height= 420, width= 420)
-    fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent')
+    fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
+    fig.update_traces(textposition='inside', textinfo='percent+label')
     
     fig_dialog = px.pie(df, names="Subject", values="Total Enroll", height=800, width= 1000)
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    fig_dialog.update_traces(textposition='inside', textinfo='percent+value')
     return fig, fig_dialog
 
 def course_graph2(session):
@@ -801,8 +776,8 @@ def course_graph2(session):
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
     fig = px.pie(df, names="Subject", values="Total Courses",height= 420, width= 420)
-    fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent')
+    fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
+    fig.update_traces(textposition='inside', textinfo='percent+label')
 
     fig_dialog = px.pie(df, names="Subject", values="Total Courses", height=800, width= 1000)
     fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
@@ -813,8 +788,9 @@ def course_graph3(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Time']
-    fig = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=420, width=370)
-    fig.update_layout(xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
+    fig = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=410, width=375)
+    fig.update_layout( xaxis_title="Subject-Title", margin=dict(t=5, l=0))
+    fig.update_traces(text=["{}-{}".format(x, color) for x, color in zip(df['Subject'], df['Level'])], textposition='inside')
 
     fig_dialog = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=650, width=1000)
     
@@ -825,7 +801,7 @@ def course_graph4(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Fee']
-    fig = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=420, width=370)
+    fig = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=410, width=375)
     fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
     fig_dialog = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=650, width=1100)
     return fig, fig_dialog
@@ -836,7 +812,7 @@ def course_graph5(session):
     df = pd.DataFrame(list(result))
     df.columns = ['Type', 'Name','Total Courses']
     df_limited = df.groupby('Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
-    fig = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height=420, width=370)
+    fig = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height=410, width=375)
     fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
 
     fig_dialog = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height= 650, width =1100)
@@ -854,7 +830,7 @@ def course_graph6(session):
         df_language = df[df['Subject'] == subject]
         fig = px.pie(df_language, names="Language", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Language", values="Courses", height=800, width= 1000)
@@ -876,7 +852,7 @@ def course_graph7(session):
         df_language = df[df['Subject'] == subject]
         fig = px.pie(df_language, names="Framework", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Framework", values="Courses", height=800, width= 1000)
@@ -897,7 +873,7 @@ def course_graph8(session):
         df_language = df[df['Subject'] == subject]
         fig = px.pie(df_language, names="Tool", values="Courses", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Tool", values="Courses", height=800, width= 1000)
@@ -914,7 +890,7 @@ def job_graph1(session):
 
     fig = px.pie(df, names="Industry", values="Total Postings",height= 420, width= 420)
     fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent')
+    fig.update_traces(textposition='inside', textinfo='percent+label')
 
     fig_dialog = px.pie(df, names="Industry", values="Total Postings", height=800, width= 1000)
     fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
@@ -925,7 +901,7 @@ def job_graph2(session):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
-    fig = px.bar(df, x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=420, width=370)
+    fig = px.bar(df, x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375)
     fig.update_layout(
         xaxis={'visible': False, 'showticklabels': True},
         showlegend=False, margin=dict(t=5, l=0)
@@ -951,7 +927,7 @@ def job_graph3(session):
         df_language = df[df['Industry'] == industry]
         fig = px.pie(df_language, names="Programming Language", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Programming Language", values="Total Postings", height=800, width= 1000)
@@ -972,7 +948,7 @@ def job_graph4(session):
         df_language = df[df['Industry'] == industry]
         fig = px.pie(df_language, names="Framework", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Framework", values="Total Postings", height=800, width= 1000)
@@ -993,7 +969,7 @@ def job_graph5(session):
         df_language = df[df['Industry'] == industry]
         fig = px.pie(df_language, names="Tool", values="Total Postings", height= 420, width= 420)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent')
+        fig.update_traces(textposition='inside', textinfo='percent+label')
         list_fig.append(fig)
 
         fig_dialog = px.pie(df_language, names="Tool", values="Total Postings", height=800, width= 1000)
@@ -1008,7 +984,7 @@ def job_graph6(session):
     df = pd.DataFrame(list(result))
     df.columns = ['Tech Type', 'Tech Name','Total Postings']
     df_limited = df.groupby('Tech Type').apply(lambda x: x.nlargest(10, 'Total Postings')).reset_index(drop=True)
-    fig = px.bar(df_limited, x='Tech Type', y='Total Postings', color='Tech Name', barmode='group', height=420, width=370)
+    fig = px.bar(df_limited, x='Tech Type', y='Total Postings', color='Tech Name', barmode='group', height=410, width=375)
     fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
 
     fig_dialog = px.bar(df_limited, x='Tech Type', y='Total Postings', color='Tech Name', barmode='group', height=650, width =1000)
