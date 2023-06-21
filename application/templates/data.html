@@ -17,14 +17,14 @@
              class="source-item col text-center px-3 py-3 rounded-3 bg-light d-flex flex-column gap-3 px-3 py-4 rounded-3 bg-light d-flex flex-column gap-3">
           <span class="source-title">{{ web['title'] }}</span>
           <div>
-            <div class="d-flex gap-3">
+            <div class="d-flex gap-3 justify-content-center">
               {% for field in web['information'] %}
               <div>
-                <div class="rounded-circle bg-info d-flex justify-content-center align-items-center"
+                <div class="rounded-circle bg-info d-flex justify-content-center align-items-center mx-auto mb-1"
                      style="width: 100px; height: 100px">
                   <span class="text-white">{{field['value']}}</span>
                 </div>
-                <p>{{field['title']}}</p>
+                <p class="m-0">{{field['title']}}</p>
               </div>
               {% endfor %}
             </div>

@@ -42,61 +42,107 @@
     {% if selected_options|length > 0 %}
     <div class="mt-4">
         <h2 class="text-danger">Các khóa học phù hợp ({{courses|length}})</h2>
+        <!-- <select class="form-select w-25 h-auto"
+            id="select_sort"
+            name="select_sort"
+            aria-label="Default select example"
+            placeholder="Chọn bộ dữ liệu">
+      <option value="enroll">Enroll</option>
+      <option value="rating">Rating</option>
+    </select> -->
         {% if courses|length == 0 %}
         <h4 class="text-center mt-3 fw-bold">Không tìm thấy dữ liệu</h4>
         {% endif %}
-        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+        {% if courses|length > 0 %}
+        <div class="search-result-container row row-cols-auto mt-4 p-3 m-auto gap-4 overflow-auto">
             {% for index,row in courses.iterrows() %}
-            <div class="course-container p-0 col border border-1 border-info"
+            <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
-                     class="course-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
-                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
+                     class="filterd-item-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
+                    <span class="filterd-item-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['rating']|round(1) }}</p>
+                        <p class="fw-bold m-0">{{ row['rating'] }}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
-                <div class="course-info p-2">
-                    {% for column in ['subject','enroll', 'fee', 'programming_language', 'framework','level'] %}
-                    <div class="d-flex justify-content-between gap-2">
-                        <span class="fw-bold text-capitalize">{{column}}:</span>
-                        <p class="text-end text-capitalize">{{ row[column] }}</p>
+                <div class="filterd-item-info p-2">
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Subject:</span>
+                        <p class="text-end text-capitalize">{{ row['subject'] }}</p>
                     </div>
-                    {% endfor %}
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Level:</span>
+                        <p class="text-end text-capitalize">{{ row['level'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Enroll:</span>
+                        <p class="text-end text-capitalize">{{ row['enroll'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Fee:</span>
+                        <p class="text-end text-capitalize">{{ row['fee'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">P_Language: </span>
+                        <p class="text-end text-capitalize">{{ row['programing_language'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Framework:</span>
+                        <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     {% endif %}
 
     <div class="w-75 border border-1 border-info rounded-1 my-4 mx-auto"></div>
     <div class="mt-4">
         <h2 class="text-danger ">Các khóa học nổi bật</h2>
-        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+        <div class="row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in top_course.iterrows() %}
-            <div class="course-container p-0 col border border-1 border-info"
+            <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
-                     class="course-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
-                    <span class="course-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
+                     class="filterd-item-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
+                    <span class="filterd-item-name text-primary p-1 overflow-ellipsis">{{ row['name'] }}</span>
                     <div class="course-rating p-1">
-                        <p class="fw-bold m-0">{{ row['rating']|round(1) }}</p>
+                        <p class="fw-bold m-0">{{ row['rating']}}</p>
                         <img height="24"
                              src="../static/img/star.png"
                              alt="Icon database" />
                     </div>
                 </div>
-                <div class="course-info p-2">
-                    {% for column in ['subject','enroll', 'fee', 'programming_language', 'framework','level'] %}
+                <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">{{column}}:</span>
-                        <p class="text-end text-capitalize">{{ row[column] }}</p>
+                        <span class="fw-bold text-capitalize">Subject:</span>
+                        <p class="text-end text-capitalize">{{ row['subject'] }}</p>
                     </div>
-                    {% endfor %}
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Level:</span>
+                        <p class="text-end text-capitalize">{{ row['level'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Enroll:</span>
+                        <p class="text-end text-capitalize">{{ row['enroll'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Fee:</span>
+                        <p class="text-end text-capitalize">{{ row['fee'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">P_Language: </span>
+                        <p class="text-end text-capitalize">{{ row['programing_language'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Framework:</span>
+                        <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -128,6 +174,6 @@
 
 {% block css %}
 <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/course-finder.css') }}" />
+      href="{{ url_for('static', filename='css/finder.css') }}" />
 {% endblock %}
 {% endblock %}

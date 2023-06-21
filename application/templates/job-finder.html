@@ -45,45 +45,83 @@
         {% if jobs|length == 0 %}
         <h4 class="text-center my-3 fw-bold">Không tìm thấy dữ liệu</h4>
         {% endif %}
-        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+        {% if jobs|length > 0 %}
+        <div class="search-result-container row row-cols-auto mt-4 p-3 m-auto gap-4 overflow-auto">
             {% for index,row in jobs.iterrows() %}
-            <div class="job-container p-0 col border border-1 border-info"
+            <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
-                <div class="job-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
-                    <span class="job-name text-primary p-1 overflow-ellipsis">{{ row['title'] }}</span>
+                <div class="filterd-item-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
+                    <span class="filterd-item-name text-primary p-1 overflow-ellipsis">{{ row['title'] }}</span>
                 </div>
-                <div class="job-info p-2">
-                    {% for column in ['industry','min_salary', 'max_salary', 'programming_language', 'framework','tool'] %}
-                    <div class="d-flex justify-content-between gap-2">
-                        <span class="fw-bold text-capitalize">{{column}}:</span>
-                        <p class="text-end text-capitalize">{{ row[column] }}</p>
+                <div class="filterd-item-info p-2">
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Industry:</span>
+                        <p class="text-end text-capitalize">{{ row['industry'] }}</p>
                     </div>
-                    {% endfor %}
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Min Salary:</span>
+                        <p class="text-end text-capitalize">{{ row['min_salary'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Max Salary:</span>
+                        <p class="text-end text-capitalize">{{ row['max_salary'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">P_Language:</span>
+                        <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Framework: </span>
+                        <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Tool:</span>
+                        <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     {% endif %}
 
     <div class="w-75 border border-1 border-info rounded-1 my-4 mx-auto"></div>
     <div class="mt-4">
         <h2 class="text-danger ">Các tin tuyển dụng nổi bật</h2>
-        <div class="search-result-container row row-cols-auto mt-4 m-auto gap-4">
+        <div class="row row-cols-auto mt-4 m-auto gap-4">
             {% for index,row in top_job.iterrows() %}
-            <div class="job-container p-0 col border border-1 border-info"
+            <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div
-                     class="job-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
-                    <span class="job-name text-primary p-1 overflow-ellipsis">{{ row['title'] }}</span>
+                     class="filterd-item-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
+                    <span class="filterd-item-name text-primary p-1 overflow-ellipsis">{{ row['title'] }}</span>
                 </div>
-                <div class="job-info p-2">
-                    {% for column in ['industry','min_salary', 'max_salary', 'programming_language', 'framework','tool'] %}
+                <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">{{column}}:</span>
-                        <p class="text-end text-capitalize">{{ row[column] }}</p>
+                        <span class="fw-bold text-capitalize">Industry:</span>
+                        <p class="text-end text-capitalize">{{ row['industry'] }}</p>
                     </div>
-                    {% endfor %}
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Min Salary:</span>
+                        <p class="text-end text-capitalize">{{ row['min_salary'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Max Salary:</span>
+                        <p class="text-end text-capitalize">{{ row['max_salary'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">P_Language:</span>
+                        <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Framework: </span>
+                        <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold text-capitalize">Tool:</span>
+                        <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -116,6 +154,6 @@
 
 {% block css %}
 <link rel="stylesheet"
-      href="{{ url_for('static', filename='css/job-finder.css') }}" />
+      href="{{ url_for('static', filename='css/finder.css') }}" />
 {% endblock %}
 {% endblock %}

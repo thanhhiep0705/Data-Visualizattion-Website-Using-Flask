@@ -12,14 +12,14 @@ app.config['ACTIVE_TAB'] = '/'
 bundlepath = 'application/secure-connect-course-data.zip'
 clientId = 'URRrzRFMRvuBIZmLFumeqhvl'
 clientSecret = '++uM_E,5pH2kGnzZTqpYGU,E,GimsdCU5g_XtTckupaBmIkeMT9kaxAP82SgAr72t4w.I4zUsq.TU6.z4xihUYHgG4Y6AOiPjl-mRNk.6DxLYngZT025ZWF05+Hqo1l5'
-course_keyspace = 'course_data'
-job_keyspace = 'job_data'
 
 cloud_config= {
     'secure_connect_bundle': bundlepath
 }
 auth_provider = PlainTextAuthProvider(clientId, clientSecret)
 cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+list_course_keyspace = ['course_data','course_coursera','course_udemy','course_edx' ]
+list_jobposting_keyspace = ['jobposting_data','jobposting_linkedin', 'jobposting_nodeflair','jobposting_dice' ]
 
 @app.route('/')
 def index():
@@ -36,18 +36,18 @@ def data():
                     'information':[
                         {
                             'title': 'Người dùng',
-                            'value': '740+ M'
+                            'value': '740 M'
                         },
                         {
                             'title': 'Công ty',
-                            'value': '50+ triệu'
+                            'value': '50 M'
                         },
                         {
                             'title': 'Ngôn ngữ',
                             'value': '24'
                         }
                     ],
-                    'website': 'https://www.linkedin.com/jobs/search?trk=guest_homepage-basic_guest_nav_menu_jobs&position=1&pageNum=0'
+                    'website': 'https://www.linkedin.com/jobs'
                 },
                 {
                     'title': 'NodeFlair',
@@ -66,6 +66,24 @@ def data():
                         }
                     ],
                     'website': 'https://nodeflair.com/'
+                },
+                {
+                    'title': 'Dice',
+                    'information':[
+                        {
+                            'title': 'Người dùng',
+                            'value': '5.9 M'
+                        },
+                        {
+                            'title': 'Người dùng/tháng',
+                            'value': '1.7 M'
+                        },
+                        {
+                            'title': 'Hồ sơ',
+                            'value': '3 M'
+                        }
+                    ],
+                    'website': 'https://www.dice.com/'
                 }
             ]
         },
@@ -83,7 +101,7 @@ def data():
                         },
                         {
                             'title': 'Người dùng',
-                            'value': '82+ triệu'
+                            'value': '82+ M'
                         },
                         {
                             'title': 'Đối tác',
@@ -101,7 +119,7 @@ def data():
                         },
                         {
                             'title': 'Người dùng',
-                            'value': '20+ triệu'
+                            'value': '20+ M'
                         },
                         {
                             'title': 'Quốc gia',
@@ -119,7 +137,7 @@ def data():
                         },
                         {
                             'title': 'Người dùng',
-                            'value': '38+ triệu'
+                            'value': '38+ M'
                         },
                         {
                             'title': 'Đối tác',
@@ -351,12 +369,15 @@ def about():
 
 @app.route('/course-finder', methods=['GET', 'POST'])
 def courseFinder():
+    keyspace = 'course_data'
     session = cluster.connect()
     selected_options = request.form.getlist('selected_options')
 
-    query = f'select name, subject, enroll, programming_language, fee, framework, level, rating, link from {course_keyspace}.course_search;'
+    query = f'select name, subject, enroll, programing_language, fee, framework, level, rating, link from {keyspace}.courses;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
+    df['fee'] = df['fee'].round(2)
+    df['rating'] = df['rating'].round(1)
 
     courses = pd.DataFrame([])
     
@@ -372,17 +393,18 @@ def courseFinder():
 
 @app.route('/job-finder', methods=['GET', 'POST'])
 def jobFinder():
+    keyspace = 'job_data'
     session = cluster.connect()
     selected_options = request.form.getlist('selected_options')
 
-    query = f'select title, industry, tool, programming_language, min_salary, max_salary, framework, link from {job_keyspace}.job_search;'
+    query = f'select title, industry, tool, programming_language, min_salary, max_salary, framework, link from {keyspace}.job_search;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
 
     jobs = pd.DataFrame([])
     
     if len(selected_options) != 0:
-        jobs = courseFilter(selected_options,df)
+        jobs = jobFilter(selected_options,df)
 
     top_job = getTopJob(df)
 
@@ -391,41 +413,50 @@ def jobFinder():
 
     return render_template('job-finder.html', jobs = jobs , top_job = top_job, selected_options = selected_options,filter_data = filter_data)
 
-@app.route('/course-visualization')
-def courseVisualization():
+@app.route('/course-visualization/<key>', methods=['GET', 'POST'])
+def courseVisualization(key):
     session = cluster.connect()
-    fig1, fig1_dialog = course_graph1(session)
+
+    # selected_db = request.args.get('selected_db')
+    # print('selected',selected_db)
+    keyspace = key
+
+
+
+    db_info = course_data_statistic(session, keyspace)
+
+    fig1, fig1_dialog = course_graph1(session, keyspace)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
-    fig2, fig2_dialog = course_graph2(session)
+    fig2, fig2_dialog = course_graph2(session, keyspace)
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     graph2_dialogJSON = json.dumps(fig2_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph three
-    fig3, fig3_dialog = course_graph3(session)
+    fig3, fig3_dialog = course_graph3(session, keyspace)
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     graph3_dialogJSON = json.dumps(fig3_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig4, fig4_dialog = course_graph4(session)
+    fig4, fig4_dialog = course_graph4(session, keyspace)
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig5, fig5_dialog = course_graph5(session)
+    fig5, fig5_dialog = course_graph5(session, keyspace)
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig6, fig6_dialog,listSubjects6  = course_graph6(session)
+    fig6, fig6_dialog,listSubjects6  = course_graph6(session, keyspace)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig7, fig7_dialog,listSubjects7  = course_graph7(session)
+    fig7, fig7_dialog,listSubjects7  = course_graph7(session, keyspace)
     graph7JSON = json.dumps(fig7, cls=plotly.utils.PlotlyJSONEncoder)
     graph7_dialogJSON = json.dumps(fig7_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
-    fig8, fig8_dialog,listSubjects8  = course_graph8(session)
+    fig8, fig8_dialog,listSubjects8  = course_graph8(session, keyspace)
     graph8JSON = json.dumps(fig8, cls=plotly.utils.PlotlyJSONEncoder)
     graph8_dialogJSON = json.dumps(fig8_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -477,7 +508,7 @@ def courseVisualization():
             'filter': []
         },
         {
-            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
             'chartId':'chart6',
             'dialogId': 'dialog-chart6',
             'graphData': graph6JSON,
@@ -486,7 +517,7 @@ def courseVisualization():
             'filter': listSubjects6
         },
         {
-            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
             'chartId':'chart7',
             'dialogId': 'dialog-chart7',
             'graphData': graph7JSON,
@@ -495,7 +526,7 @@ def courseVisualization():
             'filter': listSubjects7
         },
         {
-            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
             'chartId':'chart8',
             'dialogId': 'dialog-chart8',
             'graphData': graph8JSON,
@@ -504,42 +535,46 @@ def courseVisualization():
             'filter': listSubjects8
         },
     ]
-    return render_template('course-visualization.html', graphsData=graphsData)
+    return render_template('course-visualization.html', graphsData=graphsData, db_info=db_info, selected_db=keyspace)
 
-@app.route('/job-visualization')
-def jobVisualization():
+@app.route('/job-visualization/<key>' , methods=['GET', 'POST'])
+def jobVisualization(key):
     session = cluster.connect()
-    fig1, fig1_dialog = job_graph1(session)
+    keyspace = key
+
+    db_info = job_data_statistic(session, keyspace)
+
+    fig1, fig1_dialog = job_graph1(session, keyspace)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph two
-    fig2, fig2_dialog = job_graph2(session)
+    fig2, fig2_dialog = job_graph2(session, keyspace)
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     graph2_dialogJSON = json.dumps(fig2_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
     # Graph three
-    fig3, fig3_dialog,listSubjects3  = job_graph3(session)
+    fig3, fig3_dialog,listSubjects3  = job_graph3(session, keyspace)
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     graph3_dialogJSON = json.dumps(fig3_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig4, fig4_dialog,listSubjects4  = job_graph4(session)
+    fig4, fig4_dialog,listSubjects4  = job_graph4(session, keyspace)
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig5, fig5_dialog,listSubjects5  = job_graph5(session)
+    fig5, fig5_dialog,listSubjects5  = job_graph5(session, keyspace)
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
-    fig6, fig6_dialog = job_graph6(session)
+    fig6, fig6_dialog = job_graph6(session, keyspace)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
     graphsData = [
         {
-            'name':'Biểu đồ thống kê mức độ phổ biến của các ngành',
+            'name':'Biểu đồ thống kê mức độ phổ biến của các lĩnh vực',
             'chartId':'chart1',
             'dialogId': 'dialog-chart1',
             'graphData': graph1JSON,
@@ -548,7 +583,7 @@ def jobVisualization():
             'filter': []
         },
         {
-            'name':'Biểu đồ phân bố mức lương theo ngành',
+            'name':'Biểu đồ phân bố mức lương theo lĩnh vực',
             'chartId':'chart2',
             'dialogId': 'dialog-chart2',
             'graphData': graph2JSON,
@@ -558,7 +593,7 @@ def jobVisualization():
         },
 
         {
-            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
             'chartId':'chart3',
             'dialogId': 'dialog-chart3',
             'graphData': graph3JSON,
@@ -567,7 +602,7 @@ def jobVisualization():
             'filter': listSubjects3
         },
         {
-            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
             'chartId':'chart4',
             'dialogId': 'dialog-chart4',
             'graphData': graph4JSON,
@@ -576,7 +611,7 @@ def jobVisualization():
             'filter': listSubjects4
         },
         {
-            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo ngành',
+            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
             'chartId':'chart5',
             'dialogId': 'dialog-chart5',
             'graphData': graph5JSON,
@@ -595,17 +630,17 @@ def jobVisualization():
         },
     ]
 
-    return render_template('job-visualization.html', graphsData=graphsData)
+    return render_template('job-visualization.html', graphsData=graphsData, db_info=db_info)
 
 
 def getTopCourses(df):
-    df_top = df.sort_values(by = 'rating', ascending=False).head(10)
+    df_top = df.sort_values(by = 'enroll', ascending=False).head(10)
     return df_top
 
 def courseFilter(options, df):
     subjects = []
     frameworks = []
-    programming_languages = []
+    programing_languages = []
     levels = []
     for key in options:
         if key.find('Subject') != -1:
@@ -616,7 +651,7 @@ def courseFilter(options, df):
             frameworks.append(value)
         if key.find('Programing Language') != - 1:
             value = key.split(':')[1].strip().lower()
-            programming_languages.append(value)
+            programing_languages.append(value)
         if key.find('Level') != - 1:
             value = key.split(':')[1].strip().lower()
             levels.append(value)
@@ -626,9 +661,9 @@ def courseFilter(options, df):
         conditions.append(df['subject'].isin(subjects))
     if levels:
         conditions.append(df['level'].isin(levels))
-    if programming_languages:
-        programming_language_condition = df['programming_language'].apply(lambda x: any(language in x.split(', ') for language in programming_languages))
-        conditions.append(programming_language_condition)
+    if programing_languages:
+        programing_language_condition = df['programing_language'].apply(lambda x: any(language in x.split(', ') for language in programing_languages))
+        conditions.append(programing_language_condition)
     if frameworks:
         framework_condition = df['framework'].apply(lambda x: any(framework in x.split(', ') for framework in frameworks))
         conditions.append(framework_condition)
@@ -641,7 +676,7 @@ def courseFilter(options, df):
     else:
         filtered_df = df
 
-    return filtered_df
+    return filtered_df.sort_values(by='enroll', ascending=False)
 
 def getNormalizedArray(array):
     result = []
@@ -663,7 +698,7 @@ def getCourseFilterData(df):
     subjects = [x.title() for x in df.subject.unique()]
     levels = [x.title() for x in df.level.unique()]
     frameworks = getNormalizedArray(df.framework.unique())
-    languages = getNormalizedArray(df.programming_language.unique())
+    languages = getNormalizedArray(df.programing_language.unique())
 
     filter_data = [
         {
@@ -757,166 +792,193 @@ def getJobFilterData(df):
     ]
     return filter_data
 
-def course_graph1(session):
-    query = f'select * from {course_keyspace}.subject_enroll;'
+
+def course_data_statistic(session, keyspace):
+    query = f'select subject, programing_language, tool, framework, link from {keyspace}.courses;'
+    rs = session.execute(query)
+    df = pd.DataFrame(list(rs))
+    total_course = len(df)
+    total_subject = df['subject'].nunique()
+    total_framework = df['framework'].str.split(',').explode().nunique()
+    total_tool_count = df['tool'].str.split(',').explode().nunique()
+    total_language_count = df['programing_language'].str.split(',').explode().nunique()
+    return [total_course,total_subject, total_language_count, total_tool_count, total_framework]
+
+def job_data_statistic(session, keyspace):
+    query = f'select industry, programing_language, tool, framework, link from {keyspace}.jobs;'
+    rs = session.execute(query)
+    df = pd.DataFrame(list(rs))
+    total_course = len(df)
+    total_industry = df['industry'].nunique()
+    total_framework = df['framework'].str.split(',').explode().nunique()
+    total_tool_count = df['tool'].str.split(',').explode().nunique()
+    total_language_count = df['programing_language'].str.split(',').explode().nunique()
+    return [total_course,total_industry, total_language_count, total_tool_count, total_framework]
+
+def course_graph1(session, keyspace):
+    query = f'select subject, total_enroll from {keyspace}.subject_course_enroll;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Total Enroll']
-    fig = px.pie(df.head(10), names="Subject", values="Total Enroll", height= 420, width= 420)
+    df.columns = ['Subject', 'Total Enrolls']
+    fig = px.pie(df.head(10), names="Subject", values="Total Enrolls", height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent+label')
+    fig.update_traces(textposition='inside', textinfo='label + value')
     
-    fig_dialog = px.pie(df, names="Subject", values="Total Enroll", height=800, width= 1000)
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+value')
+    fig_dialog = px.pie(df, names="Subject", values="Total Enrolls", height=750, width= 1000, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def course_graph2(session):
-    query = f'select * from {course_keyspace}.subject_course;'
+def course_graph2(session, keyspace):
+    query = f'select subject, total_course from {keyspace}.subject_course_enroll;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
-    fig = px.pie(df.head(10), names="Subject", values="Total Courses",height= 420, width= 420)
+    fig = px.pie(df.head(10), names="Subject", values="Total Courses",height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent+label')
+    fig.update_traces(textposition='inside', textinfo='label + value')
 
-    fig_dialog = px.pie(df, names="Subject", values="Total Courses", height=800, width= 1000)
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    fig_dialog = px.pie(df, names="Subject", values="Total Courses", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def course_graph3(session):
-    query = f'select subject, level, time from {course_keyspace}.subject_level_time;'
+def course_graph3(session, keyspace):
+    query = f'select subject, level, time from {keyspace}.subject_level_time_fee;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Level', 'Time']
-    fig = px.bar(df.head(10), x='Subject', y='Time', color='Level', barmode='stack', height=410, width=375)
-    fig.update_layout( xaxis_title="Subject-Title", margin=dict(t=5, l=0))
-    fig.update_traces(texttemplate='%{x}%{y}', textposition='inside')
+    df.columns = ['Subject', 'Level', 'Average Time']
+    fig = px.bar(df.head(10), x='Subject', y='Average Time', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig.update_layout(margin=dict(t=5, l=0))
+    fig.update_traces(texttemplate='%{y}', textposition='inside')
 
-    fig_dialog = px.bar(df, x='Subject', y='Time', color='Level', barmode='stack', height=650, width=1000)
+    fig_dialog = px.bar(df, x='Subject', y='Average Time', color='Level', barmode='stack', height=650, width=1000,color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     
     return fig, fig_dialog
 
-def course_graph4(session):
-    query = f'select subject, level, fee from {course_keyspace}.subject_level_fee;'
+def course_graph4(session, keyspace):
+    query = f'select subject, level, fee from {keyspace}.subject_level_time_fee;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Level', 'Fee']
-    fig = px.bar(df.head(10), x='Subject', y='Fee', color='Level', barmode='stack', height=410, width=375)
-    fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
-    fig_dialog = px.bar(df, x='Subject', y='Fee', color='Level', barmode='stack', height=650, width=1100)
+    df.columns = ['Subject', 'Level', 'Average Fee']
+    fig = px.bar(df.head(10), x='Subject', y='Average Fee', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig.update_layout( margin=dict(t=5, l=0))
+    fig.update_traces(texttemplate='%{y}', textposition='auto')
+    fig_dialog = px.bar(df, x='Subject', y='Average Fee', color='Level', barmode='stack', height=650, width=1100,color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     return fig, fig_dialog
 
-def course_graph5(session):
-    query = f'select * from {course_keyspace}.top_tech;'
+def course_graph5(session, keyspace):
+    query = f'select * from {keyspace}.top_tech;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Type', 'Name','Total Courses']
-    df_limited = df.groupby('Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
-    fig = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height=410, width=375)
-    fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
+    df.columns = ['Technology Type', 'Technology Name','Total Courses']
+    df_limited = df.groupby('Technology Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
+    fig = px.bar(df_limited.head(10), x='Technology Type', y='Total Courses', color='Technology Name', barmode='group', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig.update_layout(margin=dict(t=5, l=0))
+    fig.update_traces(texttemplate='%{y}', textposition='auto')
 
-    fig_dialog = px.bar(df_limited, x='Type', y='Total Courses', color='Name', barmode='group', height= 650, width =1100)
+    fig_dialog = px.bar(df_limited, x='Technology Type', y='Total Courses', color='Technology Name', barmode='group', height= 650, width =1100, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig_dialog.update_layout(xaxis_title='Technology Type', yaxis_title='Total Courses')
+    fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     return fig, fig_dialog
 
-def course_graph6(session):
-    query = f'select subject,programming_language,total_course from {course_keyspace}.subject_language_course;'
+def course_graph6(session, keyspace):
+    query = f'select subject,programming_language,total_course from {keyspace}.subject_language_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Language', 'Courses']
+    df.columns = ['Subject', 'Language', 'Total Courses']
     subjects_list = df['Subject'].unique().tolist()
     list_fig = []
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Language", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Language", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Language", values="Courses", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Language", values="Total Courses", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel1)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-def course_graph7(session):
-    query = f'select subject,framework,total_course from {course_keyspace}.subject_framework_course;'
+def course_graph7(session, keyspace):
+    query = f'select subject,framework,total_course from {keyspace}.subject_framework_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Framework', 'Courses']
+    df.columns = ['Subject', 'Framework', 'Total Courses']
     subjects_list = df['Subject'].unique().tolist()
     list_fig = []
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Framework", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Framework", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Framework", values="Courses", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Framework", values="Total Courses", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel1)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-def course_graph8(session):
-    query = f'select subject,tool,total_course from {course_keyspace}.subject_tool_course;'
+def course_graph8(session, keyspace):
+    query = f'select subject,tool,total_course from {keyspace}.subject_tool_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Subject', 'Tool', 'Courses']
+    df.columns = ['Subject', 'Tool', 'Total Courses']
     subjects_list = df['Subject'].unique().tolist()
     list_fig = []
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Tool", values="Courses", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Tool", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Tool", values="Courses", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Tool", values="Total Courses", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-def job_graph1(session):
-    query = f'select industry,total_job from {job_keyspace}.industry_job;'
+def job_graph1(session, keyspace):
+    query = f'select industry,total_job from {keyspace}.industry_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Total Postings']
 
-    fig = px.pie(df.head(10), names="Industry", values="Total Postings",height= 420, width= 420)
+    fig = px.pie(df.head(10), names="Industry", values="Total Postings",height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-    fig.update_traces(textposition='inside', textinfo='percent+label')
+    fig.update_traces(textposition='inside', textinfo='label + value')
 
-    fig_dialog = px.pie(df, names="Industry", values="Total Postings", height=800, width= 1000)
-    fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+    fig_dialog = px.pie(df, names="Industry", values="Total Postings", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def job_graph2(session):
-    query = f'select industry,min_salary, max_salary from {job_keyspace}.industry_salary;'
+def job_graph2(session, keyspace):
+    query = f'select industry,min_salary, max_salary from {keyspace}.industry_salary;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
-    fig = px.bar(df.head(10), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375)
-    fig.update_layout(
-        xaxis={'visible': False, 'showticklabels': True},
-        showlegend=False, margin=dict(t=5, l=0)
-    )
+    fig = px.bar(df.head(10), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig.update_layout(margin=dict(t=5, l=0), yaxis_title='Salary')
+    fig.update_traces(texttemplate='%{y}', textposition='inside')
 
-    fig_dialog = px.bar(df, x='Industry', y=['Min Salary', 'Max Salary'], barmode='group')
+    fig_dialog = px.bar(df, x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=650, width =1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig_dialog.update_layout(
-        title='Salary Range by Industry',
         xaxis_title='Industry',
         yaxis_title='Salary'
     )
+    fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     return fig, fig_dialog
 
-def job_graph3(session):
-    query = f'select industry,programming_language,total_job from {job_keyspace}.industry_language_job;'
+def job_graph3(session, keyspace):
+    query = f'select industry,programming_language,total_job from {keyspace}.industry_language_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Programming Language', 'Total Postings']
@@ -925,19 +987,19 @@ def job_graph3(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Programming Language", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Programming Language", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Programming Language", values="Total Postings", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Programming Language", values="Total Postings", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph4(session):
-    query = f'select industry,framework,total_job from {job_keyspace}.industry_framework_job;'
+def job_graph4(session, keyspace):
+    query = f'select industry,framework,total_job from {keyspace}.industry_framework_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Framework', 'Total Postings']
@@ -946,19 +1008,19 @@ def job_graph4(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Framework", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Framework", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Framework", values="Total Postings", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Framework", values="Total Postings", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph5(session):
-    query = f'select industry,tool,total_job from {job_keyspace}.industry_tool_job;'
+def job_graph5(session, keyspace):
+    query = f'select industry,tool,total_job from {keyspace}.industry_tool_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Tool', 'Total Postings']
@@ -967,25 +1029,28 @@ def job_graph5(session):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Tool", values="Total Postings", height= 420, width= 420)
+        fig = px.pie(df_language.head(10), names="Tool", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
-        fig.update_traces(textposition='inside', textinfo='percent+label')
+        fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
 
-        fig_dialog = px.pie(df_language, names="Tool", values="Total Postings", height=800, width= 1000)
-        fig_dialog.update_traces(textposition='inside', textinfo='percent+label')
+        fig_dialog = px.pie(df_language, names="Tool", values="Total Postings", height=750, width= 1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph6(session):
-    query = f'select tech_type,tech_name,total_job from {job_keyspace}.top_tech;'
+def job_graph6(session, keyspace):
+    query = f'select tech_type,tech_name,total_job from {keyspace}.top_tech;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
-    df.columns = ['Tech Type', 'Tech Name','Total Postings']
-    df_limited = df.groupby('Tech Type').apply(lambda x: x.nlargest(10, 'Total Postings')).reset_index(drop=True)
-    fig = px.bar(df_limited, x='Tech Type', y='Total Postings', color='Tech Name', barmode='group', height=410, width=375)
-    fig.update_layout( xaxis={'visible': False, 'showticklabels': True}, margin=dict(t=5, l=0))
+    df.columns = ['Technology Type', 'Technology Name','Total Postings']
+    df_limited = df.groupby('Technology Type').apply(lambda x: x.nlargest(10, 'Total Postings')).reset_index(drop=True)
+    fig = px.bar(df_limited, x='Technology Type', y='Total Postings', color='Technology Name', barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig.update_layout( margin=dict(t=5, l=0))
+    fig.update_traces(texttemplate='%{y}', textposition='inside')
 
-    fig_dialog = px.bar(df_limited, x='Tech Type', y='Total Postings', color='Tech Name', barmode='group', height=650, width =1000)
+    fig_dialog = px.bar(df_limited, x='Technology Type', y='Total Postings', color='Technology Name', barmode='group', height=650, width =1000,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
+    fig_dialog.update_layout( xaxis_title='Technology Type', yaxis_title='Total Postings')
     return fig, fig_dialog
