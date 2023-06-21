@@ -1,5 +1,5 @@
 from application import app
-from flask import render_template, request
+from flask import render_template, request, g
 import pandas as pd
 import json
 import plotly
@@ -9,17 +9,22 @@ from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 
 app.config['ACTIVE_TAB'] = '/'
-bundlepath = 'application/secure-connect-course-data.zip'
-clientId = 'URRrzRFMRvuBIZmLFumeqhvl'
-clientSecret = '++uM_E,5pH2kGnzZTqpYGU,E,GimsdCU5g_XtTckupaBmIkeMT9kaxAP82SgAr72t4w.I4zUsq.TU6.z4xihUYHgG4Y6AOiPjl-mRNk.6DxLYngZT025ZWF05+Hqo1l5'
-
-cloud_config= {
-    'secure_connect_bundle': bundlepath
-}
-auth_provider = PlainTextAuthProvider(clientId, clientSecret)
-cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
 list_course_keyspace = ['course_data','course_coursera','course_udemy','course_edx' ]
 list_jobposting_keyspace = ['jobposting_data','jobposting_linkedin', 'jobposting_nodeflair','jobposting_dice' ]
+
+@app.before_request
+def before_request():
+    bundlepath = 'application/secure-connect-course-data.zip'
+    clientId = 'URRrzRFMRvuBIZmLFumeqhvl'
+    clientSecret = '++uM_E,5pH2kGnzZTqpYGU,E,GimsdCU5g_XtTckupaBmIkeMT9kaxAP82SgAr72t4w.I4zUsq.TU6.z4xihUYHgG4Y6AOiPjl-mRNk.6DxLYngZT025ZWF05+Hqo1l5'
+
+    cloud_config= {
+        'secure_connect_bundle': bundlepath
+    }
+    auth_provider = PlainTextAuthProvider(clientId, clientSecret)
+    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+    session = cluster.connect()
+    g.db_session = session 
 
 @app.route('/')
 def index():
@@ -370,7 +375,7 @@ def about():
 @app.route('/course-finder', methods=['GET', 'POST'])
 def courseFinder():
     keyspace = 'course_data'
-    session = cluster.connect()
+    session= g.db_session
     selected_options = request.form.getlist('selected_options')
 
     query = f'select name, subject, enroll, programing_language, fee, framework, level, rating, link from {keyspace}.courses;'
@@ -394,7 +399,7 @@ def courseFinder():
 @app.route('/job-finder', methods=['GET', 'POST'])
 def jobFinder():
     keyspace = 'job_data'
-    session = cluster.connect()
+    session= g.db_session
     selected_options = request.form.getlist('selected_options')
 
     query = f'select title, industry, tool, programming_language, min_salary, max_salary, framework, link from {keyspace}.job_search;'
@@ -415,7 +420,7 @@ def jobFinder():
 
 @app.route('/course-visualization/<key>', methods=['GET', 'POST'])
 def courseVisualization(key):
-    session = cluster.connect()
+    session= g.db_session
 
     # selected_db = request.args.get('selected_db')
     # print('selected',selected_db)
@@ -539,7 +544,7 @@ def courseVisualization(key):
 
 @app.route('/job-visualization/<key>' , methods=['GET', 'POST'])
 def jobVisualization(key):
-    session = cluster.connect()
+    session= g.db_session
     keyspace = key
 
     db_info = job_data_statistic(session, keyspace)
