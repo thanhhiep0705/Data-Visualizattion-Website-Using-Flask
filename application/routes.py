@@ -413,15 +413,9 @@ def jobFinder():
 
     return render_template('job-finder.html', jobs = jobs , top_job = top_job, selected_options = selected_options,filter_data = filter_data)
 
-@app.route('/course-visualization/<key>', methods=['GET', 'POST'])
-def courseVisualization(key):
+@app.route('/course-visualization/<keyspace>', methods=['GET', 'POST'])
+def courseVisualization(keyspace):
     session = cluster.connect()
-
-    # selected_db = request.args.get('selected_db')
-    # print('selected',selected_db)
-    keyspace = key
-
-
 
     db_info = course_data_statistic(session, keyspace)
 
@@ -463,84 +457,99 @@ def courseVisualization(key):
 
     graphsData = [
         {
-            'name':'Biểu đồ thống kê số lượng học viên theo lĩnh vực',
-            'chartId':'chart1',
-            'dialogId': 'dialog-chart1',
-            'graphData': graph1JSON,
-            'graphDialogData': graph1_dialogJSON,
-            'haveFilter': False,
-            'filter': []
+            'groupName': 'Thống kê theo lĩnh vực',
+            'data': [
+                {
+                    'name':'Biểu đồ thống kê số lượng học viên theo lĩnh vực',
+                    'chartId':'chart1',
+                    'dialogId': 'dialog-chart1',
+                    'graphData': graph1JSON,
+                    'graphDialogData': graph1_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                },
+                {
+                    'name':'Biểu đồ thống kê số lượng khóa học theo lĩnh vực',
+                    'chartId':'chart2',
+                    'dialogId': 'dialog-chart2',
+                    'graphData': graph2JSON,
+                    'graphDialogData': graph2_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                }
+            ]
         },
         {
-            'name':'Biểu đồ thống kê số lượng khóa học theo lĩnh vực',
-            'chartId':'chart2',
-            'dialogId': 'dialog-chart2',
-            'graphData': graph2JSON,
-            'graphDialogData': graph2_dialogJSON,
-            'haveFilter': False,
-            'filter': []
+            'groupName': 'Thống kê theo cấp độ',
+            'data': [
+                {
+                    'name':'Biểu đồ thời gian học trung bình theo lĩnh vực và cấp độ',
+                    'chartId':'chart3',
+                    'dialogId': 'dialog-chart3',
+                    'graphData': graph3JSON,
+                    'graphDialogData': graph3_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                },
+                {
+                    'name':'Biểu đồ học phí trung bình theo lĩnh vực và cấp độ',
+                    'chartId':'chart4',
+                    'dialogId': 'dialog-chart4',
+                    'graphData': graph4JSON,
+                    'graphDialogData': graph4_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                }
+            ]
         },
         {
-            'name':'Biểu đồ thời gian học trung bình theo lĩnh vực và cấp độ',
-            'chartId':'chart3',
-            'dialogId': 'dialog-chart3',
-            'graphData': graph3JSON,
-            'graphDialogData': graph3_dialogJSON,
-            'haveFilter': False,
-            'filter': []
-        },
-        {
-            'name':'Biểu đồ học phí trung bình theo lĩnh vực và cấp độ',
-            'chartId':'chart4',
-            'dialogId': 'dialog-chart4',
-            'graphData': graph4JSON,
-            'graphDialogData': graph4_dialogJSON,
-            'haveFilter': False,
-            'filter': []
-        },
-        {
-            'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
-            'chartId':'chart5',
-            'dialogId': 'dialog-chart5',
-            'graphData': graph5JSON,
-            'graphDialogData': graph5_dialogJSON,
-            'haveFilter': False,
-            'filter': []
-        },
-        {
-            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
-            'chartId':'chart6',
-            'dialogId': 'dialog-chart6',
-            'graphData': graph6JSON,
-            'graphDialogData': graph6_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects6
-        },
-        {
-            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
-            'chartId':'chart7',
-            'dialogId': 'dialog-chart7',
-            'graphData': graph7JSON,
-            'graphDialogData': graph7_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects7
-        },
-        {
-            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
-            'chartId':'chart8',
-            'dialogId': 'dialog-chart8',
-            'graphData': graph8JSON,
-            'graphDialogData': graph8_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects8
-        },
+            'groupName': 'Thống kê theo công nghệ',
+            'data': [
+                {
+                    'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
+                    'chartId':'chart5',
+                    'dialogId': 'dialog-chart5',
+                    'graphData': graph5JSON,
+                    'graphDialogData': graph5_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                },
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
+                    'chartId':'chart6',
+                    'dialogId': 'dialog-chart6',
+                    'graphData': graph6JSON,
+                    'graphDialogData': graph6_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects6
+                },
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
+                    'chartId':'chart7',
+                    'dialogId': 'dialog-chart7',
+                    'graphData': graph7JSON,
+                    'graphDialogData': graph7_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects7
+                },
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
+                    'chartId':'chart8',
+                    'dialogId': 'dialog-chart8',
+                    'graphData': graph8JSON,
+                    'graphDialogData': graph8_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects8
+                }
+            ]
+        }
     ]
+
     return render_template('course-visualization.html', graphsData=graphsData, db_info=db_info, selected_db=keyspace)
 
-@app.route('/job-visualization/<key>' , methods=['GET', 'POST'])
-def jobVisualization(key):
+@app.route('/job-visualization/<keyspace>' , methods=['GET', 'POST'])
+def jobVisualization(keyspace):
     session = cluster.connect()
-    keyspace = key
 
     db_info = job_data_statistic(session, keyspace)
 
@@ -571,70 +580,78 @@ def jobVisualization(key):
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-
     graphsData = [
         {
-            'name':'Biểu đồ thống kê mức độ phổ biến của các lĩnh vực',
-            'chartId':'chart1',
-            'dialogId': 'dialog-chart1',
-            'graphData': graph1JSON,
-            'graphDialogData': graph1_dialogJSON,
-            'haveFilter': False,
-            'filter': []
+            'groupName': 'Thống kê theo lĩnh vực',
+            'data': [
+                {
+                    'name':'Biểu đồ thống kê mức độ phổ biến của các lĩnh vực',
+                    'chartId':'chart1',
+                    'dialogId': 'dialog-chart1',
+                    'graphData': graph1JSON,
+                    'graphDialogData': graph1_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                },
+                {
+                    'name':'Biểu đồ phân bố mức lương theo lĩnh vực',
+                    'chartId':'chart2',
+                    'dialogId': 'dialog-chart2',
+                    'graphData': graph2JSON,
+                    'graphDialogData': graph2_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                }
+            ]
         },
         {
-            'name':'Biểu đồ phân bố mức lương theo lĩnh vực',
-            'chartId':'chart2',
-            'dialogId': 'dialog-chart2',
-            'graphData': graph2JSON,
-            'graphDialogData': graph2_dialogJSON,
-            'haveFilter': False,
-            'filter': []
-        },
-
-        {
-            'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
-            'chartId':'chart3',
-            'dialogId': 'dialog-chart3',
-            'graphData': graph3JSON,
-            'graphDialogData': graph3_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects3
-        },
-        {
-            'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
-            'chartId':'chart4',
-            'dialogId': 'dialog-chart4',
-            'graphData': graph4JSON,
-            'graphDialogData': graph4_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects4
-        },
-        {
-            'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
-            'chartId':'chart5',
-            'dialogId': 'dialog-chart5',
-            'graphData': graph5JSON,
-            'graphDialogData': graph5_dialogJSON,
-            'haveFilter': True,
-            'filter': listSubjects5
-        },
-        {
-            'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
-            'chartId':'chart6',
-            'dialogId': 'dialog-chart6',
-            'graphData': graph6JSON,
-            'graphDialogData': graph6_dialogJSON,
-            'haveFilter': False,
-            'filter': []
-        },
+            'groupName': 'Thống kê theo công nghệ',
+            'data': [
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ ngôn ngữ lập trình theo lĩnh vực',
+                    'chartId':'chart3',
+                    'dialogId': 'dialog-chart3',
+                    'graphData': graph3JSON,
+                    'graphDialogData': graph3_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects3
+                },
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ khung chương trình theo lĩnh vực',
+                    'chartId':'chart4',
+                    'dialogId': 'dialog-chart4',
+                    'graphData': graph4JSON,
+                    'graphDialogData': graph4_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects4
+                },
+                {
+                    'name':'Biểu đồ tương quan tỷ lệ công cụ trình theo lĩnh vực',
+                    'chartId':'chart5',
+                    'dialogId': 'dialog-chart5',
+                    'graphData': graph5JSON,
+                    'graphDialogData': graph5_dialogJSON,
+                    'haveFilter': True,
+                    'filter': listSubjects5
+                },
+                {
+                    'name':'Biểu đồ thống kê mức độ phổ biến các công nghệ hiện nay',
+                    'chartId':'chart6',
+                    'dialogId': 'dialog-chart6',
+                    'graphData': graph6JSON,
+                    'graphDialogData': graph6_dialogJSON,
+                    'haveFilter': False,
+                    'filter': []
+                }
+            ]
+        }
     ]
 
-    return render_template('job-visualization.html', graphsData=graphsData, db_info=db_info)
+    return render_template('job-visualization.html', graphsData=graphsData, db_info=db_info, selected_db = keyspace)
 
 
 def getTopCourses(df):
-    df_top = df.sort_values(by = 'enroll', ascending=False).head(10)
+    df_top = df.sort_values(by = 'enroll', ascending=False).head(8)
     return df_top
 
 def courseFilter(options, df):
@@ -820,7 +837,7 @@ def course_graph1(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Enrolls']
-    fig = px.pie(df.head(10), names="Subject", values="Total Enrolls", height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig = px.pie(df.head(8), names="Subject", values="Total Enrolls", height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='label + value')
     
@@ -833,7 +850,7 @@ def course_graph2(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
-    fig = px.pie(df.head(10), names="Subject", values="Total Courses",height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig = px.pie(df.head(8), names="Subject", values="Total Courses",height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='label + value')
 
@@ -846,7 +863,7 @@ def course_graph3(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Time']
-    fig = px.bar(df.head(10), x='Subject', y='Average Time', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig = px.bar(df.head(8), x='Subject', y='Average Time', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(margin=dict(t=5, l=0))
     fig.update_traces(texttemplate='%{y}', textposition='inside')
 
@@ -860,7 +877,7 @@ def course_graph4(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Fee']
-    fig = px.bar(df.head(10), x='Subject', y='Average Fee', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig = px.bar(df.head(8), x='Subject', y='Average Fee', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout( margin=dict(t=5, l=0))
     fig.update_traces(texttemplate='%{y}', textposition='auto')
     fig_dialog = px.bar(df, x='Subject', y='Average Fee', color='Level', barmode='stack', height=650, width=1100,color_discrete_sequence=px.colors.qualitative.Pastel1)
@@ -873,7 +890,7 @@ def course_graph5(session, keyspace):
     df = pd.DataFrame(list(result))
     df.columns = ['Technology Type', 'Technology Name','Total Courses']
     df_limited = df.groupby('Technology Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
-    fig = px.bar(df_limited.head(10), x='Technology Type', y='Total Courses', color='Technology Name', barmode='group', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
+    fig = px.bar(df_limited.head(8), x='Technology Type', y='Total Courses', color='Technology Name', barmode='group', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(margin=dict(t=5, l=0))
     fig.update_traces(texttemplate='%{y}', textposition='auto')
 
@@ -892,7 +909,7 @@ def course_graph6(session, keyspace):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Language", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
+        fig = px.pie(df_language.head(8), names="Language", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
@@ -914,7 +931,7 @@ def course_graph7(session, keyspace):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Framework", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
+        fig = px.pie(df_language.head(8), names="Framework", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel1)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
@@ -935,7 +952,7 @@ def course_graph8(session, keyspace):
     list_fig_dialog = []
     for subject in df['Subject'].unique().tolist():
         df_language = df[df['Subject'] == subject]
-        fig = px.pie(df_language.head(10), names="Tool", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig = px.pie(df_language.head(8), names="Tool", values="Total Courses", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
@@ -952,7 +969,7 @@ def job_graph1(session, keyspace):
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Total Postings']
 
-    fig = px.pie(df.head(10), names="Industry", values="Total Postings",height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig = px.pie(df.head(8), names="Industry", values="Total Postings",height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='label + value')
 
@@ -965,7 +982,7 @@ def job_graph2(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
-    fig = px.bar(df.head(10), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
+    fig = px.bar(df.head(8), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout(margin=dict(t=5, l=0), yaxis_title='Salary')
     fig.update_traces(texttemplate='%{y}', textposition='inside')
 
@@ -987,7 +1004,7 @@ def job_graph3(session, keyspace):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Programming Language", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig = px.pie(df_language.head(8), names="Programming Language", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
@@ -1008,7 +1025,7 @@ def job_graph4(session, keyspace):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Framework", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig = px.pie(df_language.head(8), names="Framework", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
@@ -1029,7 +1046,7 @@ def job_graph5(session, keyspace):
     list_fig_dialog = []
     for industry in industries_list:
         df_language = df[df['Industry'] == industry]
-        fig = px.pie(df_language.head(10), names="Tool", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
+        fig = px.pie(df_language.head(8), names="Tool", values="Total Postings", height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
         fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
         fig.update_traces(textposition='inside', textinfo='label + value')
         list_fig.append(fig)
