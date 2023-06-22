@@ -41,13 +41,13 @@
 
     {% if selected_options|length > 0 %}
     <div class="mt-4">
-        <h2 class="text-danger">Các tin tuyển dụng phù hợp ({{jobs|length}})</h2>
-        {% if jobs|length == 0 %}
+        <h2 class="text-danger">Các tin tuyển dụng phù hợp ({{filtered_jobs|length}})</h2>
+        {% if filtered_jobs|length == 0 %}
         <h4 class="text-center my-3 fw-bold">Không tìm thấy dữ liệu</h4>
         {% endif %}
-        {% if jobs|length > 0 %}
+        {% if filtered_jobs|length > 0 %}
         <div class="search-result-container row row-cols-auto mt-4 p-3 m-auto gap-4 overflow-auto">
-            {% for index,row in jobs.iterrows() %}
+            {% for index,row in filtered_jobs.iterrows() %}
             <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
                 <div class="filterd-item-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
@@ -55,28 +55,28 @@
                 </div>
                 <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Industry:</span>
+                        <span class="fw-bold">Lĩnh vực:</span>
                         <p class="text-end text-capitalize">{{ row['industry'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Min Salary:</span>
-                        <p class="text-end text-capitalize">{{ row['min_salary'] }}</p>
+                        <span class="fw-bold">Mức lương:</span>
+                        <p class="text-end text-capitalize">{{ row['min_salary'] }} - {{ row['max_salary'] }} $</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Max Salary:</span>
-                        <p class="text-end text-capitalize">{{ row['max_salary'] }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">P_Language:</span>
+                        <span class="fw-bold">NN lập trình:</span>
                         <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Framework: </span>
+                        <span class="fw-bold">Khung chương trình: </span>
                         <p class="text-end text-capitalize">{{ row['framework'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Tool:</span>
+                        <span class="fw-bold">Công cụ:</span>
                         <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Nền tảng:</span>
+                        <p class="text-end text-capitalize">{{ row['platform'] }}</p>
                     </div>
                 </div>
             </div>
@@ -90,37 +90,36 @@
     <div class="mt-4">
         <h2 class="text-danger ">Các tin tuyển dụng nổi bật</h2>
         <div class="row row-cols-auto mt-4 m-auto gap-4">
-            {% for index,row in top_job.iterrows() %}
+            {% for index,row in top_jobs.iterrows() %}
             <div class="filterd-item-container p-0 col border border-1 border-info"
                  onclick="window.open('{{ row['link'] }}', '_blank')">
-                <div
-                     class="filterd-item-title bg-light p-2 d-flex justify-content-between border-bottom border-bottom-1 border-info">
+                <div class="filterd-item-title bg-light p-2 d-flex justify-content-between align-items-center border-bottom border-bottom-1 border-info">
                     <span class="filterd-item-name text-primary p-1 overflow-ellipsis">{{ row['title'] }}</span>
                 </div>
                 <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Industry:</span>
+                        <span class="fw-bold">Lĩnh vực:</span>
                         <p class="text-end text-capitalize">{{ row['industry'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Min Salary:</span>
-                        <p class="text-end text-capitalize">{{ row['min_salary'] }}</p>
+                        <span class="fw-bold">Mức lương:</span>
+                        <p class="text-end text-capitalize">{{ row['min_salary'] }} - {{ row['max_salary'] }} $</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Max Salary:</span>
-                        <p class="text-end text-capitalize">{{ row['max_salary'] }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">P_Language:</span>
+                        <span class="fw-bold">NN lập trình:</span>
                         <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Framework: </span>
+                        <span class="fw-bold">Khung chương trình: </span>
                         <p class="text-end text-capitalize">{{ row['framework'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Tool:</span>
+                        <span class="fw-bold">Công cụ:</span>
                         <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Nền tảng:</span>
+                        <p class="text-end text-capitalize">{{ row['platform'] }}</p>
                     </div>
                 </div>
             </div>

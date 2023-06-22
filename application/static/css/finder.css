@@ -95,8 +95,14 @@
   background-color: #85eafc !important;
 }
 
-.select2-container--bootstrap-5{
-  width: 50vw;
+.select2-container--bootstrap-5 {
+  width: 70vw;
+}
+
+@media (max-width: 1280px) {
+  .select2-container--bootstrap-5 {
+    width: 90vw;
+  }
 }
 
 .select2-search{

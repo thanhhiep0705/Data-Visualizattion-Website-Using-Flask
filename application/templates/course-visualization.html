@@ -7,11 +7,11 @@
             name="select_course_db"
             aria-label="Default select example"
             placeholder="Chọn bộ dữ liệu">
-      <option value="course_data"
+      <option value="datawarehouse"
               selected>Tất cả</option>
-      <option value="course_data">Coursera</option>
-      <option value="course_data">Udemy</option>
-      <option value="course_data">Edx</option>
+      <option value="coursera">Coursera</option>
+      <option value="udemy">Udemy</option>
+      <option value="edx">edX</option>
     </select>
   </div>
   <div class="row row-cols-auto gap-3 ms-0">
@@ -37,7 +37,7 @@
 
     <div class="box"
          id="box3">
-      <img src="../static/img/programing_language.png"
+      <img src="../static/img/programming_language.png"
            height="40"
            width="40"
            alt="Course icon" />
@@ -138,8 +138,8 @@
               </div>
               <div class="w-50 m-3">
                 <label for="subject-select"
-                       class="pb-1">Chọn lĩnh vực</label>
-                <select id="subject-select-{{ loop.index }}"
+                       class="pb-1">Chọn bộ lọc</label>
+                <select id="subject-select-{{chart['chartId']}}"
                         aria-label=""
                         class="form-select">
                   {% for index, subject in chart['filter'] %}
@@ -182,7 +182,7 @@
 
   var allData = getDataArray(graphs);
 
-  var selectedSubject = [0, 0, 0, 0, 0, 0, 0, 0];
+  var selectedSubject = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0];
 
   allData.forEach((graph, index) => {
     var graphData = JSON.parse(graph.graphData);
@@ -198,20 +198,37 @@
     }
   });
 
-  $('#subject-select-2').change(function () {
-    selectedSubject[5] = $(this).val();
-    Plotly.react('chart6', JSON.parse(allData[5].graphData)[selectedSubject[5]], {});
-    Plotly.react('dialog-chart6', JSON.parse(allData[5].graphDialogData)[selectedSubject[5]], {});
+  $('#subject-select-chart3').change(function () {
+    selectedSubject[2] = $(this).val();
+    Plotly.react('chart3', JSON.parse(allData[2].graphData)[selectedSubject[2]], {});
+    Plotly.react('dialog-chart3', JSON.parse(allData[2].graphDialogData)[selectedSubject[2]], {});
   });
-  $('#subject-select-3').change(function () {
-    selectedSubject[6] = $(this).val();
-    Plotly.react('chart7', JSON.parse(allData[6].graphData)[selectedSubject[6]], {});
-    Plotly.react('dialog-chart7', JSON.parse(allData[6].graphDialogData)[selectedSubject[6]], {});
+  $('#subject-select-chart4').change(function () {
+    selectedSubject[3] = $(this).val();
+    Plotly.react('chart4', JSON.parse(allData[3].graphData)[selectedSubject[3]], {});
+    Plotly.react('dialog-chart4', JSON.parse(allData[3].graphDialogData)[selectedSubject[3]], {});
   });
-  $('#subject-select-4').change(function () {
-    selectedSubject[7] = $(this).val();
-    Plotly.react('chart8', JSON.parse(allData[7].graphData)[selectedSubject[7]], {});
-    Plotly.react('dialog-chart8', JSON.parse(allData[7].graphDialogData)[selectedSubject[7]], {});
+  $('#subject-select-chart5').change(function () {
+    selectedSubject[4] = $(this).val();
+    Plotly.react('chart5', JSON.parse(allData[4].graphData)[selectedSubject[4]], {});
+    Plotly.react('dialog-chart5', JSON.parse(allData[4].graphDialogData)[selectedSubject[4]], {});
+  });
+
+  $('#subject-select-chart9').change(function () {
+    selectedSubject[8] = $(this).val();
+    Plotly.react('chart9', JSON.parse(allData[8].graphData)[selectedSubject[8]], {});
+    Plotly.react('dialog-chart9', JSON.parse(allData[8].graphDialogData)[selectedSubject[8]], {});
+  });
+
+  $('#subject-select-chart10').change(function () {
+    selectedSubject[9] = $(this).val();
+    Plotly.react('chart10', JSON.parse(allData[9].graphData)[selectedSubject[9]], {});
+    Plotly.react('dialog-chart10', JSON.parse(allData[9].graphDialogData)[selectedSubject[9]], {});
+  });
+  $('#subject-select-chart11').change(function () {
+    selectedSubject[10] = $(this).val();
+    Plotly.react('chart11', JSON.parse(allData[10].graphData)[selectedSubject[10]], {});
+    Plotly.react('dialog-chart11', JSON.parse(allData[10].graphDialogData)[selectedSubject[10]], {});
   });
 
   var selectElement = document.getElementById("select_course_db");

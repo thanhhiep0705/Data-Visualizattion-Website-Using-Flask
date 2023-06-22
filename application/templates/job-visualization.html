@@ -10,10 +10,9 @@
       <option value=""
               disabled
               selected>Chọn bộ dữ liệu</option>
-      <option value="job_data">Tất cả</option>
-      <option value="job_data">LinkedIn</option>
-      <option value="job_data">NodeFlair</option>
-      <option value="job_data">Dice</option>
+      <option value="datawarehouse">Tất cả</option>
+      <option value="nodeflair">NodeFlair</option>
+      <option value="dice">Dice</option>
     </select>
   </div>
   <div class="row row-cols-auto gap-3 ms-0">
@@ -39,7 +38,7 @@
 
     <div class="box"
          id="box3">
-      <img src="../static/img/programing_language.png"
+      <img src="../static/img/programming_language.png"
            height="40"
            width="40"
            alt="Course icon" />
@@ -139,9 +138,9 @@
                         data-bs-dismiss="modal"></button>
               </div>
               <div class="w-50 m-3">
-                <label for="industry-select-{{ loop.index }}"
-                       class="pb-1">Chọn ngành</label>
-                <select id="industry-select-{{ loop.index }}"
+                <label for="industry-select-{{chart['chartId']}}"
+                       class="pb-1">Chọn bộ lọc</label>
+                <select id="industry-select-{{chart['chartId']}}"
                         aria-label=""
                         class="form-select">
                   {% for index, industry in chart['filter'] %}
@@ -185,7 +184,7 @@
 
   var allData = getDataArray(graphs);
 
-  var selectedSubject = [0, 0, 0, 0, 0, 0];
+  var selectedIndustry = [0, 0, 0, 0, 0, 0,0,0,0];
 
   allData.forEach((graph, index) => {
     var graphData = JSON.parse(graph.graphData);
@@ -196,25 +195,41 @@
       Plotly.plot(graph.dialogId, graphDialogData, {});
     }
     else {
-      Plotly.plot(graph.chartId, graphData[selectedSubject[index]], {});
-      Plotly.plot(graph.dialogId, graphDialogData[selectedSubject[index]], {});
+      Plotly.plot(graph.chartId, graphData[selectedIndustry[index]], {});
+      Plotly.plot(graph.dialogId, graphDialogData[selectedIndustry[index]], {});
     }
   });
 
-  $('#industry-select-1').change(function () {
+  $('#industry-select-chart3').change(function () {
     selectedIndustry[2] = $(this).val();
     Plotly.react('chart3', JSON.parse(allData[2].graphData)[selectedIndustry[2]], {});
     Plotly.react('dialog-chart3', JSON.parse(allData[2].graphDialogData)[selectedIndustry[2]], {});
   });
-  $('#industry-select-2').change(function () {
+  $('#industry-select-chart4').change(function () {
     selectedIndustry[3] = $(this).val();
     Plotly.react('chart4', JSON.parse(allData[3].graphData)[selectedIndustry[3]], {});
     Plotly.react('dialog-chart4', JSON.parse(allData[3].graphDialogData)[selectedIndustry[3]], {});
   });
-  $('#industry-select-3').change(function () {
+  $('#industry-select-chart5').change(function () {
     selectedIndustry[4] = $(this).val();
     Plotly.react('chart5', JSON.parse(allData[4].graphData)[selectedIndustry[4]], {});
     Plotly.react('dialog-chart5', JSON.parse(allData[4].graphDialogData)[selectedIndustry[4]], {});
+  });
+
+  $('#industry-select-chart7').change(function () {
+    selectedIndustry[6] = $(this).val();
+    Plotly.react('chart7', JSON.parse(allData[6].graphData)[selectedIndustry[6]], {});
+    Plotly.react('dialog-chart7', JSON.parse(allData[6].graphDialogData)[selectedIndustry[6]], {});
+  });
+  $('#industry-select-chart8').change(function () {
+    selectedIndustry[7] = $(this).val();
+    Plotly.react('chart8', JSON.parse(allData[7].graphData)[selectedIndustry[7]], {});
+    Plotly.react('dialog-chart8', JSON.parse(allData[7].graphDialogData)[selectedIndustry[7]], {});
+  });
+  $('#industry-select-chart9').change(function () {
+    selectedIndustry[8] = $(this).val();
+    Plotly.react('chart9', JSON.parse(allData[8].graphData)[selectedIndustry[8]], {});
+    Plotly.react('dialog-chart9', JSON.parse(allData[8].graphDialogData)[selectedIndustry[8]], {});
   });
 
   var selectElement = document.getElementById("select_job_db");

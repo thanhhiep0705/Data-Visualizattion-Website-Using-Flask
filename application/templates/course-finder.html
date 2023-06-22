@@ -42,14 +42,6 @@
     {% if selected_options|length > 0 %}
     <div class="mt-4">
         <h2 class="text-danger">Các khóa học phù hợp ({{courses|length}})</h2>
-        <!-- <select class="form-select w-25 h-auto"
-            id="select_sort"
-            name="select_sort"
-            aria-label="Default select example"
-            placeholder="Chọn bộ dữ liệu">
-      <option value="enroll">Enroll</option>
-      <option value="rating">Rating</option>
-    </select> -->
         {% if courses|length == 0 %}
         <h4 class="text-center mt-3 fw-bold">Không tìm thấy dữ liệu</h4>
         {% endif %}
@@ -70,28 +62,32 @@
                 </div>
                 <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Subject:</span>
+                        <span class="fw-bold">Lĩnh vực:</span>
                         <p class="text-end text-capitalize">{{ row['subject'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Level:</span>
+                        <span class="fw-bold">Cấp độ:</span>
                         <p class="text-end text-capitalize">{{ row['level'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Enroll:</span>
-                        <p class="text-end text-capitalize">{{ row['enroll'] }}</p>
+                        <span class="fw-bold">Số học viên:</span>
+                        <p class="text-end text-capitalize">{{ row['enroll']|int }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Fee:</span>
-                        <p class="text-end text-capitalize">{{ row['fee'] }}</p>
+                        <span class="fw-bold">NN lập trình:</span>
+                        <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">P_Language: </span>
-                        <p class="text-end text-capitalize">{{ row['programing_language'] }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Framework:</span>
+                        <span class="fw-bold">Khung chương trình: </span>
                         <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Công cụ:</span>
+                        <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Nền tảng:</span>
+                        <p class="text-end text-capitalize">{{ row['platform'] }}</p>
                     </div>
                 </div>
             </div>
@@ -120,28 +116,32 @@
                 </div>
                 <div class="filterd-item-info p-2">
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Subject:</span>
+                        <span class="fw-bold">Lĩnh vực:</span>
                         <p class="text-end text-capitalize">{{ row['subject'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Level:</span>
+                        <span class="fw-bold">Cấp độ:</span>
                         <p class="text-end text-capitalize">{{ row['level'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Enroll:</span>
-                        <p class="text-end text-capitalize">{{ row['enroll'] }}</p>
+                        <span class="fw-bold">Số học viên:</span>
+                        <p class="text-end text-capitalize">{{ row['enroll']|int }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Fee:</span>
-                        <p class="text-end text-capitalize">{{ row['fee'] }}</p>
+                        <span class="fw-bold">NN lập trình:</span>
+                        <p class="text-end text-capitalize">{{ row['programming_language'] }}</p>
                     </div>
                     <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">P_Language: </span>
-                        <p class="text-end text-capitalize">{{ row['programing_language'] }}</p>
-                    </div>
-                    <div class="d-flex justify-content-between gap-1">
-                        <span class="fw-bold text-capitalize">Framework:</span>
+                        <span class="fw-bold">Khung chương trình: </span>
                         <p class="text-end text-capitalize">{{ row['framework'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Công cụ:</span>
+                        <p class="text-end text-capitalize">{{ row['tool'] }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-1">
+                        <span class="fw-bold">Nền tảng:</span>
+                        <p class="text-end text-capitalize">{{ row['platform'] }}</p>
                     </div>
                 </div>
             </div>
