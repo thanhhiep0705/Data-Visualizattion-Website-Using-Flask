@@ -1,22 +1,14 @@
-from application import app
+from application import app, session
 from flask import render_template, request
 import pandas as pd
 import json
 import plotly
 import plotly.express as px
-from cassandra.cluster import Cluster
-from cassandra.auth import PlainTextAuthProvider
+
 
 app.config['ACTIVE_TAB'] = '/'
-bundlepath = 'application/secure-connect-datn.zip'
-clientId = 'PKUrqlvgFpAippRORPhslTCP'
-clientSecret = '4NnPaNpsB8Z_SpdTUX7hFy3UHmCfZtmB_Xrs7K21,WmxMJTTjzmZXqfwFNqTETCZ6f2nj6sL_h1KNc6xrokZtkIUlekoraJiZygUBlcrvlNKfQ13KtkbIvuv4qm9ZSWZ'
 
-cloud_config= {
-    'secure_connect_bundle': bundlepath
-}
-auth_provider = PlainTextAuthProvider(clientId, clientSecret)
-cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
+
 list_course_keyspace = ['datawarehouse','coursera','udemy','edx' ]
 list_jobposting_keyspace = ['datawarehouse', 'nodeflair','dice' ]
 
@@ -358,9 +350,9 @@ def courseFinder():
         if key.find('Nhà cung cấp') != -1:
             keyspace = key.split(':')[1].strip().lower()
             break
-    session = cluster.connect(keyspace)
+    
 
-    query = f'select name, subject, enroll, programming_language, fee, framework, tool, platform, level, rating, link from course;'
+    query = f'select name, subject, enroll, programming_language, fee, framework, tool, platform, level, rating, link from {keyspace}.course;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     df['fee'] = df['fee'].round(2)
@@ -380,10 +372,10 @@ def courseFinder():
 @app.route('/job-finder', methods=['GET', 'POST'])
 def jobFinder():
     keyspace = 'datawarehouse'
-    session = cluster.connect(keyspace)
+    
     selected_options = request.form.getlist('selected_options')
 
-    query = f'select title, industry, tool, programming_language, platform, min_salary, max_salary, framework, link from jobposting;'
+    query = f'select title, industry, tool, programming_language, platform, min_salary, max_salary, framework, link from {keyspace}.jobposting;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     df['min_salary'] = df['min_salary'].round(2)
@@ -402,52 +394,52 @@ def jobFinder():
 
 @app.route('/course-visualization/<keyspace>', methods=['GET', 'POST'])
 def courseVisualization(keyspace):
-    session = cluster.connect(keyspace)
+    
 
-    db_info = course_data_statistic(session)
+    db_info = course_data_statistic(session, keyspace)
 
-    fig1, fig1_dialog = course_graph1(session)
+    fig1, fig1_dialog = course_graph1(session, keyspace)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig2, fig2_dialog = course_graph2(session)
+    fig2, fig2_dialog = course_graph2(session, keyspace)
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     graph2_dialogJSON = json.dumps(fig2_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig3, fig3_dialog,listSubjects3  = course_graph3(session)
+    fig3, fig3_dialog,listSubjects3  = course_graph3(session, keyspace)
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     graph3_dialogJSON = json.dumps(fig3_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig4, fig4_dialog,listSubjects4  = course_graph4(session)
+    fig4, fig4_dialog,listSubjects4  = course_graph4(session, keyspace)
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig5, fig5_dialog,listSubjects5  = course_graph5(session)
+    fig5, fig5_dialog,listSubjects5  = course_graph5(session, keyspace)
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig6, fig6_dialog = course_graph6(session)
+    fig6, fig6_dialog = course_graph6(session, keyspace)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig7, fig7_dialog = course_graph7(session)
+    fig7, fig7_dialog = course_graph7(session, keyspace)
     graph7JSON = json.dumps(fig7, cls=plotly.utils.PlotlyJSONEncoder)
     graph7_dialogJSON = json.dumps(fig7_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig8, fig8_dialog = course_graph8(session)
+    fig8, fig8_dialog = course_graph8(session, keyspace)
     graph8JSON = json.dumps(fig8, cls=plotly.utils.PlotlyJSONEncoder)
     graph8_dialogJSON = json.dumps(fig8_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
-    fig9, fig9_dialog,listFramework9  = course_graph9(session)
+    fig9, fig9_dialog,listFramework9  = course_graph9(session, keyspace)
     graph9JSON = json.dumps(fig9, cls=plotly.utils.PlotlyJSONEncoder)
     graph9_dialogJSON = json.dumps(fig9_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig10, fig10_dialog,listFramework10  = course_graph10(session)
+    fig10, fig10_dialog,listFramework10  = course_graph10(session, keyspace)
     graph10JSON = json.dumps(fig10, cls=plotly.utils.PlotlyJSONEncoder)
     graph10_dialogJSON = json.dumps(fig10_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig11, fig11_dialog,listFramework11  = course_graph11(session)
+    fig11, fig11_dialog,listFramework11  = course_graph11(session, keyspace)
     graph11JSON = json.dumps(fig11, cls=plotly.utils.PlotlyJSONEncoder)
     graph11_dialogJSON = json.dumps(fig11_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -572,44 +564,44 @@ def courseVisualization(keyspace):
 
 @app.route('/job-visualization/<keyspace>' , methods=['GET', 'POST'])
 def jobVisualization(keyspace):
-    session = cluster.connect(keyspace)
+    
 
-    db_info = job_data_statistic(session)
+    db_info = job_data_statistic(session, keyspace)
 
-    fig1, fig1_dialog = job_graph1(session)
+    fig1, fig1_dialog = job_graph1(session, keyspace)
     graph1JSON = json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)
     graph1_dialogJSON = json.dumps(fig1_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig2, fig2_dialog = job_graph2(session)
+    fig2, fig2_dialog = job_graph2(session, keyspace)
     graph2JSON = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
     graph2_dialogJSON = json.dumps(fig2_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig3, fig3_dialog,listSubjects3  = job_graph3(session)
+    fig3, fig3_dialog,listSubjects3  = job_graph3(session, keyspace)
     graph3JSON = json.dumps(fig3, cls=plotly.utils.PlotlyJSONEncoder)
     graph3_dialogJSON = json.dumps(fig3_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig4, fig4_dialog,listSubjects4  = job_graph4(session)
+    fig4, fig4_dialog,listSubjects4  = job_graph4(session, keyspace)
     graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
     graph4_dialogJSON = json.dumps(fig4_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig5, fig5_dialog,listSubjects5  = job_graph5(session)
+    fig5, fig5_dialog,listSubjects5  = job_graph5(session, keyspace)
     graph5JSON = json.dumps(fig5, cls=plotly.utils.PlotlyJSONEncoder)
     graph5_dialogJSON = json.dumps(fig5_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
 
-    fig6, fig6_dialog = job_graph6(session)
+    fig6, fig6_dialog = job_graph6(session, keyspace)
     graph6JSON = json.dumps(fig6, cls=plotly.utils.PlotlyJSONEncoder)
     graph6_dialogJSON = json.dumps(fig6_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig7, fig7_dialog,listLanguages7  = job_graph7(session)
+    fig7, fig7_dialog,listLanguages7  = job_graph7(session, keyspace)
     graph7JSON = json.dumps(fig7, cls=plotly.utils.PlotlyJSONEncoder)
     graph7_dialogJSON = json.dumps(fig7_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig8, fig8_dialog,listFrameworks8  = job_graph8(session)
+    fig8, fig8_dialog,listFrameworks8  = job_graph8(session, keyspace)
     graph8JSON = json.dumps(fig8, cls=plotly.utils.PlotlyJSONEncoder)
     graph8_dialogJSON = json.dumps(fig8_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
-    fig9, fig9_dialog,listTools9  = job_graph9(session)
+    fig9, fig9_dialog,listTools9  = job_graph9(session, keyspace)
     graph9JSON = json.dumps(fig9, cls=plotly.utils.PlotlyJSONEncoder)
     graph9_dialogJSON = json.dumps(fig9_dialog, cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -824,8 +816,8 @@ def getCourseFilterData(df):
     ]
     return filter_data
 
-def course_data_statistic(session):
-    query = f'select subject, programming_language, tool, framework, link from course;'
+def course_data_statistic(session, keyspace):
+    query = f'select subject, programming_language, tool, framework, link from {keyspace}.course;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     total_course = len(df)
@@ -919,8 +911,8 @@ def getJobFilterData(df):
     ]
     return filter_data
 
-def job_data_statistic(session):
-    query = f'select industry, programming_language, tool, framework, link from jobposting;'
+def job_data_statistic(session, keyspace):
+    query = f'select industry, programming_language, tool, framework, link from {keyspace}.jobposting;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     total_course = len(df)
@@ -930,8 +922,8 @@ def job_data_statistic(session):
     total_language_count = df['programming_language'].str.split(',').explode().nunique()
     return [total_course,total_industry, total_language_count, total_tool_count, total_framework]
 
-def course_graph1(session):
-    query = f'select subject, total_enroll from subject_course_enroll;'
+def course_graph1(session, keyspace):
+    query = f'select subject, total_enroll from {keyspace}.subject_course_enroll;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Enrolls']
@@ -943,8 +935,8 @@ def course_graph1(session):
     fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def course_graph2(session):
-    query = f'select subject, total_course from subject_course_enroll;'
+def course_graph2(session, keyspace):
+    query = f'select subject, total_course from {keyspace}.subject_course_enroll;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
@@ -956,8 +948,8 @@ def course_graph2(session):
     fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def course_graph3(session):
-    query = f'select subject,programming_language,total_course from subject_language_course;'
+def course_graph3(session, keyspace):
+    query = f'select subject,programming_language,total_course from {keyspace}.subject_language_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Language', 'Total Courses']
@@ -979,8 +971,8 @@ def course_graph3(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-def course_graph4(session):
-    query = f'select subject,framework,total_course from subject_framework_course;'
+def course_graph4(session, keyspace):
+    query = f'select subject,framework,total_course from {keyspace}.subject_framework_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Framework', 'Total Courses']
@@ -1001,8 +993,8 @@ def course_graph4(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-def course_graph5(session):
-    query = f'select subject,tool,total_course from subject_tool_course;'
+def course_graph5(session, keyspace):
+    query = f'select subject,tool,total_course from {keyspace}.subject_tool_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Tool', 'Total Courses']
@@ -1025,8 +1017,8 @@ def course_graph5(session):
 
 
 
-def course_graph6(session):
-    query = f'select subject, level, time from subject_level_time_fee;'
+def course_graph6(session, keyspace):
+    query = f'select subject, level, time from {keyspace}.subject_level_time_fee;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Time']
@@ -1039,8 +1031,8 @@ def course_graph6(session):
     
     return fig, fig_dialog
 
-def course_graph7(session):
-    query = f'select subject, level, fee from subject_level_time_fee;'
+def course_graph7(session, keyspace):
+    query = f'select subject, level, fee from {keyspace}.subject_level_time_fee;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Fee']
@@ -1051,8 +1043,8 @@ def course_graph7(session):
     fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     return fig, fig_dialog
 
-def course_graph8(session):
-    query = f'select * from top_tech;'
+def course_graph8(session, keyspace):
+    query = f'select * from {keyspace}.top_tech;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Technology Type', 'Technology Name','Total Courses']
@@ -1067,8 +1059,8 @@ def course_graph8(session):
     return fig, fig_dialog
 
 
-def course_graph9(session):
-    query = f'select subject,programming_language,total_course from subject_language_course;'
+def course_graph9(session, keyspace):
+    query = f'select subject,programming_language,total_course from {keyspace}.subject_language_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Language', 'Total Courses']
@@ -1090,8 +1082,8 @@ def course_graph9(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(languages_list))
 
-def course_graph10(session):
-    query = f'select subject,framework,total_course from subject_framework_course;'
+def course_graph10(session, keyspace):
+    query = f'select subject,framework,total_course from {keyspace}.subject_framework_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Framework', 'Total Courses']
@@ -1112,8 +1104,8 @@ def course_graph10(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(frameworks_list))
 
-def course_graph11(session):
-    query = f'select subject,tool,total_course from subject_tool_course;'
+def course_graph11(session, keyspace):
+    query = f'select subject,tool,total_course from {keyspace}.subject_tool_course;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Tool', 'Total Courses']
@@ -1134,8 +1126,8 @@ def course_graph11(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(tools_list))
 
-def job_graph1(session):
-    query = f'select industry,total_job from industry_job_salary;'
+def job_graph1(session, keyspace):
+    query = f'select industry,total_job from {keyspace}.industry_job_salary;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Total Postings']
@@ -1148,8 +1140,8 @@ def job_graph1(session):
     fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
     return fig, fig_dialog
 
-def job_graph2(session):
-    query = f'select industry,min_salary, max_salary from industry_job_salary;'
+def job_graph2(session, keyspace):
+    query = f'select industry,min_salary, max_salary from {keyspace}.industry_job_salary;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
@@ -1165,8 +1157,8 @@ def job_graph2(session):
     fig_dialog.update_traces(texttemplate='%{y}', textposition='inside')
     return fig, fig_dialog
 
-def job_graph3(session):
-    query = f'select industry,programming_language,total_job from industry_language_job;'
+def job_graph3(session, keyspace):
+    query = f'select industry,programming_language,total_job from {keyspace}.industry_language_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Programming Language', 'Total Postings']
@@ -1187,8 +1179,8 @@ def job_graph3(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph4(session):
-    query = f'select industry,framework,total_job from industry_framework_job;'
+def job_graph4(session, keyspace):
+    query = f'select industry,framework,total_job from {keyspace}.industry_framework_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Framework', 'Total Postings']
@@ -1209,8 +1201,8 @@ def job_graph4(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph5(session):
-    query = f'select industry,tool,total_job from industry_tool_job;'
+def job_graph5(session, keyspace):
+    query = f'select industry,tool,total_job from {keyspace}.industry_tool_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Tool', 'Total Postings']
@@ -1231,8 +1223,8 @@ def job_graph5(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(industries_list))
 
-def job_graph6(session):
-    query = f'select tech_type,tech_name,total_job from top_tech_job;'
+def job_graph6(session, keyspace):
+    query = f'select tech_type,tech_name,total_job from {keyspace}.top_tech_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Technology Type', 'Technology Name','Total Postings']
@@ -1246,8 +1238,8 @@ def job_graph6(session):
     fig_dialog.update_layout( xaxis_title='Technology Type', yaxis_title='Total Postings')
     return fig, fig_dialog
 
-def job_graph7(session):
-    query = f'select industry,programming_language,total_job from industry_language_job;'
+def job_graph7(session, keyspace):
+    query = f'select industry,programming_language,total_job from {keyspace}.industry_language_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Programming Language', 'Total Postings']
@@ -1268,8 +1260,8 @@ def job_graph7(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(languages_list))
 
-def job_graph8(session):
-    query = f'select industry,framework,total_job from industry_framework_job;'
+def job_graph8(session, keyspace):
+    query = f'select industry,framework,total_job from {keyspace}.industry_framework_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Framework', 'Total Postings']
@@ -1290,8 +1282,8 @@ def job_graph8(session):
 
     return list_fig ,list_fig_dialog, list(enumerate(frameworks_list))
 
-def job_graph9(session):
-    query = f'select industry,tool,total_job from industry_tool_job;'
+def job_graph9(session, keyspace):
+    query = f'select industry,tool,total_job from {keyspace}.industry_tool_job;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Tool', 'Total Postings']
