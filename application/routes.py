@@ -1,10 +1,21 @@
-from application import app, session
+from application import app
 from flask import render_template, request
 import pandas as pd
 import json
 import plotly
 import plotly.express as px
+from cassandra.cluster import Cluster
+from cassandra.auth import PlainTextAuthProvider
 
+bundlepath = 'application/secure-connect-datn.zip'
+clientId = 'PKUrqlvgFpAippRORPhslTCP'
+clientSecret = '4NnPaNpsB8Z_SpdTUX7hFy3UHmCfZtmB_Xrs7K21,WmxMJTTjzmZXqfwFNqTETCZ6f2nj6sL_h1KNc6xrokZtkIUlekoraJiZygUBlcrvlNKfQ13KtkbIvuv4qm9ZSWZ'
+
+cloud_config= {
+    'secure_connect_bundle': bundlepath
+}
+auth_provider = PlainTextAuthProvider(clientId, clientSecret)
+cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
 
 app.config['ACTIVE_TAB'] = '/'
 
@@ -343,6 +354,7 @@ def about():
 @app.route('/course-finder', methods=['GET', 'POST'])
 def courseFinder():
     keyspace = 'datawarehouse'
+    session = cluster.connect()
     
     selected_options = request.form.getlist('selected_options')
 
@@ -372,7 +384,7 @@ def courseFinder():
 @app.route('/job-finder', methods=['GET', 'POST'])
 def jobFinder():
     keyspace = 'datawarehouse'
-    
+    session = cluster.connect()
     selected_options = request.form.getlist('selected_options')
 
     query = f'select title, industry, tool, programming_language, platform, min_salary, max_salary, framework, link from {keyspace}.jobposting;'
@@ -394,7 +406,7 @@ def jobFinder():
 
 @app.route('/course-visualization/<keyspace>', methods=['GET', 'POST'])
 def courseVisualization(keyspace):
-    
+    session = cluster.connect()
 
     db_info = course_data_statistic(session, keyspace)
 
@@ -564,7 +576,7 @@ def courseVisualization(keyspace):
 
 @app.route('/job-visualization/<keyspace>' , methods=['GET', 'POST'])
 def jobVisualization(keyspace):
-    
+    session = cluster.connect()
 
     db_info = job_data_statistic(session, keyspace)
 
