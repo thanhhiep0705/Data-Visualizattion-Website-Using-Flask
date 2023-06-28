@@ -829,15 +829,20 @@ def getCourseFilterData(df):
     return filter_data
 
 def course_data_statistic(session, keyspace):
-    query = f'select subject, programming_language, tool, framework, link from {keyspace}.course;'
+    query = f'select subject, programming_language, tool, framework, platform, link from {keyspace}.course;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     total_course = len(df)
-    total_subject = df['subject'].nunique()
-    total_framework = df['framework'].str.split(',').explode().nunique()
-    total_tool_count = df['tool'].str.split(',').explode().nunique()
-    total_language_count = df['programming_language'].str.split(',').explode().nunique()
-    return [total_course,total_subject, total_language_count, total_tool_count, total_framework]
+    total_subject = df[df['subject'] != 'None']['subject'].nunique()
+    total_framework = df['framework'].str.split(',').explode().str.strip()
+    total_framework = total_framework[total_framework != 'None'].nunique()
+    total_tool = df['tool'].str.split(',').explode().str.strip()
+    total_tool = total_tool[total_tool != 'None'].nunique()
+    total_language = df['programming_language'].str.split(',').explode().str.strip()
+    total_language = total_language[total_language != 'None'].nunique()
+    total_platform = df['platform'].str.split(',').explode().str.strip()
+    total_platform = total_platform[total_platform != 'None'].nunique()
+    return [total_course,total_subject, total_language, total_tool, total_framework, total_platform]
 
 def getTopJob(df):
     df_top = df.sort_values(by = 'max_salary', ascending=False).head(10)
@@ -924,21 +929,27 @@ def getJobFilterData(df):
     return filter_data
 
 def job_data_statistic(session, keyspace):
-    query = f'select industry, programming_language, tool, framework, link from {keyspace}.jobposting;'
+    query = f'select industry, programming_language, tool, framework, platform, link from {keyspace}.jobposting;'
     rs = session.execute(query)
     df = pd.DataFrame(list(rs))
     total_course = len(df)
-    total_industry = df['industry'].nunique()
-    total_framework = df['framework'].str.split(',').explode().nunique()
-    total_tool_count = df['tool'].str.split(',').explode().nunique()
-    total_language_count = df['programming_language'].str.split(',').explode().nunique()
-    return [total_course,total_industry, total_language_count, total_tool_count, total_framework]
+    total_industry = df[df['industry'] != 'None']['industry'].nunique()
+    total_framework = df['framework'].str.split(',').explode().str.strip()
+    total_framework = total_framework[total_framework != 'None'].nunique()
+    total_tool = df['tool'].str.split(',').explode().str.strip()
+    total_tool = total_tool[total_tool != 'None'].nunique()
+    total_language = df['programming_language'].str.split(',').explode().str.strip()
+    total_language = total_language[total_language != 'None'].nunique()
+    total_platform = df['platform'].str.split(',').explode().str.strip()
+    total_platform = total_platform[total_platform != 'None'].nunique()
+    return [total_course,total_industry, total_language, total_tool, total_framework, total_platform]
 
 def course_graph1(session, keyspace):
     query = f'select subject, total_enroll from {keyspace}.subject_course_enroll;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Enrolls']
+    df = df.loc[df['Subject'] != 'None']
     fig = px.pie(df.head(8), names="Subject", values="Total Enrolls", height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='label + value')
@@ -952,6 +963,7 @@ def course_graph2(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Total Courses']
+    df = df.loc[df['Subject'] != 'None']
     fig = px.pie(df.head(8), names="Subject", values="Total Courses",height= 420, width= 420, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(showlegend=False,margin=dict(t=15, l=0))
     fig.update_traces(textposition='inside', textinfo='label + value')
@@ -965,7 +977,8 @@ def course_graph3(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Language', 'Total Courses']
-    subjects_list = df['Subject'].unique().tolist()
+    df = df.loc[df['Subject'] != 'None']
+    subjects_list = df.groupby('Subject')['Total Courses'].sum().nlargest(10).index.tolist()
     subjects_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -980,7 +993,6 @@ def course_graph3(session, keyspace):
         fig_dialog.update_traces(textposition='inside', textinfo='label+percent+value')
         list_fig_dialog.append(fig_dialog)
 
-
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
 def course_graph4(session, keyspace):
@@ -988,7 +1000,8 @@ def course_graph4(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Framework', 'Total Courses']
-    subjects_list = df['Subject'].unique().tolist()
+    df = df.loc[df['Subject'] != 'None']
+    subjects_list = df.groupby('Subject')['Total Courses'].sum().nlargest(10).index.tolist()
     subjects_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1010,7 +1023,8 @@ def course_graph5(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Tool', 'Total Courses']
-    subjects_list = df['Subject'].unique().tolist()
+    df = df.loc[df['Subject'] != 'None']
+    subjects_list = df.groupby('Subject')['Total Courses'].sum().nlargest(10).index.tolist()
     subjects_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1027,13 +1041,12 @@ def course_graph5(session, keyspace):
 
     return list_fig ,list_fig_dialog, list(enumerate(subjects_list))
 
-
-
 def course_graph6(session, keyspace):
     query = f'select subject, level, time from {keyspace}.subject_level_time_fee;'
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Time']
+    df = df.loc[df['Subject'] != 'None']
     fig = px.bar(df.head(8), x='Subject', y='Average Time', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(margin=dict(t=5, l=0))
     fig.update_traces(texttemplate='%{y}', textposition='inside')
@@ -1048,6 +1061,7 @@ def course_graph7(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Level', 'Average Fee']
+    df = df.loc[df['Subject'] != 'None']
     fig = px.bar(df.head(8), x='Subject', y='Average Fee', color='Level', barmode='stack', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout( margin=dict(t=5, l=0))
     fig.update_traces(texttemplate='%{y}', textposition='auto')
@@ -1060,6 +1074,7 @@ def course_graph8(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Technology Type', 'Technology Name','Total Courses']
+    df = df.loc[df['Technology Name'] != 'None']
     df_limited = df.groupby('Technology Type').apply(lambda x: x.nlargest(10, 'Total Courses')).reset_index(drop=True)
     fig = px.bar(df_limited.head(8), x='Technology Type', y='Total Courses', color='Technology Name', barmode='group', height=410, width=375, color_discrete_sequence=px.colors.qualitative.Pastel1)
     fig.update_layout(margin=dict(t=5, l=0))
@@ -1076,7 +1091,8 @@ def course_graph9(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Language', 'Total Courses']
-    languages_list = df['Language'].unique().tolist()
+    filtered_df = df.loc[df['Language'] != 'None']
+    languages_list = filtered_df.groupby('Language')['Total Courses'].sum().nlargest(10).index.tolist()
     languages_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1099,7 +1115,8 @@ def course_graph10(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Framework', 'Total Courses']
-    frameworks_list = df['Framework'].unique().tolist()
+    filtered_df = df.loc[df['Framework'] != 'None']
+    frameworks_list = filtered_df.groupby('Framework')['Total Courses'].sum().nlargest(10).index.tolist()
     frameworks_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1121,7 +1138,8 @@ def course_graph11(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Subject', 'Tool', 'Total Courses']
-    tools_list = df['Tool'].unique().tolist()
+    df = df.loc[df['Tool'] != 'None']
+    tools_list = df.groupby('Tool')['Total Courses'].sum().nlargest(10).index.tolist()
     tools_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1143,6 +1161,7 @@ def job_graph1(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Total Postings']
+    df = df.loc[df['Industry'] != 'None']
 
     fig = px.pie(df.head(8), names="Industry", values="Total Postings",height= 420, width= 420,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout(showlegend=False, margin=dict(t=15, l=0))
@@ -1157,6 +1176,7 @@ def job_graph2(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Min Salary', 'Max Salary']
+    df = df.loc[df['Industry'] != 'None']
     fig = px.bar(df.head(8), x='Industry', y=['Min Salary', 'Max Salary'], barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout(margin=dict(t=5, l=0), yaxis_title='Salary')
     fig.update_traces(texttemplate='%{y}', textposition='inside')
@@ -1174,7 +1194,8 @@ def job_graph3(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Programming Language', 'Total Postings']
-    industries_list = df['Industry'].unique().tolist()
+    df = df.loc[df['Industry'] != 'None']
+    industries_list = df.groupby('Industry')['Total Postings'].sum().nlargest(10).index.tolist()
     industries_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1196,7 +1217,8 @@ def job_graph4(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Framework', 'Total Postings']
-    industries_list = df['Industry'].unique().tolist()
+    df = df.loc[df['Industry'] != 'None']
+    industries_list = df.groupby('Industry')['Total Postings'].sum().nlargest(10).index.tolist()
     industries_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1218,7 +1240,8 @@ def job_graph5(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Tool', 'Total Postings']
-    industries_list = df['Industry'].unique().tolist()
+    df = df.loc[df['Industry'] != 'None']
+    industries_list = df.groupby('Industry')['Total Postings'].sum().nlargest(10).index.tolist()
     industries_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1240,6 +1263,7 @@ def job_graph6(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Technology Type', 'Technology Name','Total Postings']
+    df = df.loc[df['Technology Name'] != 'None']
     df_limited = df.groupby('Technology Type').apply(lambda x: x.nlargest(10, 'Total Postings')).reset_index(drop=True)
     fig = px.bar(df_limited, x='Technology Type', y='Total Postings', color='Technology Name', barmode='group', height=410, width=375,color_discrete_sequence=px.colors.qualitative.Pastel2)
     fig.update_layout( margin=dict(t=5, l=0))
@@ -1255,7 +1279,8 @@ def job_graph7(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Programming Language', 'Total Postings']
-    languages_list = df['Programming Language'].unique().tolist()
+    df = df.loc[df['Programming Language'] != 'None']
+    languages_list = df.groupby('Programming Language')['Total Postings'].sum().nlargest(10).index.tolist()
     languages_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1277,7 +1302,8 @@ def job_graph8(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Framework', 'Total Postings']
-    frameworks_list = df['Framework'].unique().tolist()
+    df = df.loc[df['Framework'] != 'None']
+    frameworks_list = df.groupby('Framework')['Total Postings'].sum().nlargest(10).index.tolist()
     frameworks_list.sort()
     list_fig = []
     list_fig_dialog = []
@@ -1299,7 +1325,8 @@ def job_graph9(session, keyspace):
     result = session.execute(query)
     df = pd.DataFrame(list(result))
     df.columns = ['Industry', 'Tool', 'Total Postings']
-    tools_list = df['Tool'].unique().tolist()
+    df = df.loc[df['Tool'] != 'None']
+    tools_list = df.groupby('Tool')['Total Postings'].sum().nlargest(10).index.tolist()
     tools_list.sort()
     list_fig = []
     list_fig_dialog = []

@@ -111,7 +111,9 @@
     dropdownLinks2.forEach(function (link) {
       if (currentUrl.includes('course-visualization') || currentUrl.includes('job-visualization')) {
         document.getElementById("dropdown-link-2").classList.add("active");
-        link.classList.add("active");
+        if(link.href === currentUrl){
+          link.classList.add("active");
+        }
         return;
       }
     });

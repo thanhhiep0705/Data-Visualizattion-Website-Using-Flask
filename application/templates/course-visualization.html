@@ -64,6 +64,16 @@
       <div class="number">{{db_info[4]}}</div>
       <div class="text">Khung chương trình</div>
     </div>
+
+    <div class="box"
+         id="box6">
+      <img src="../static/img/platform.png"
+           height="40"
+           width="40"
+           alt="Course icon" />
+      <div class="number">{{db_info[5]}}</div>
+      <div class="text">Nền tảng</div>
+    </div>
   </div>
   <div class="d-flex flex-column gap-4">
     {% for group in graphsData %}
@@ -182,7 +192,7 @@
 
   var allData = getDataArray(graphs);
 
-  var selectedSubject = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0];
+  var selectedSubject = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   allData.forEach((graph, index) => {
     var graphData = JSON.parse(graph.graphData);
